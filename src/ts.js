@@ -47,13 +47,14 @@ var ts = {
 		return name.match(/^[a-z][0-9a-z\-]*[0-9a-z]$/) ? true : false;
 	},
 	init: function() {
+		var loginStatus = $("form.registration").addClass("tsInitializing")[0];
+		var login = $("form.login").addClass("tsInitializing")[0];
+
 		$.ajax({ url: "/status", 
 			success: function(status) {
+				$(loginStatus).removeClass("tsInitializing");
+				$(login).removeClass("tsInitializing");
 				ts.loadStatus(status);
-				// set login status
-				var loginStatus = $("form.registration")[0];
-				var login = $("form.login")[0];
-
 				// do login status
 				if(loginStatus) {
 					ts.loginStatus(loginStatus);
