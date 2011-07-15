@@ -106,11 +106,9 @@ var ts = {
 			error: errback
 		});
 	},
-	register: function(username, password, form) {
-		var options = {
-			annotate: "[name=username]"
-		};
-		var spaceCallback = function() {
+	register: function(username, password, form, options) {
+		options = options || {}
+		var spaceCallback = options.success || function() {
 			ts.messages.display(form, ts.locale.spaceSuccess, true);
 			window.location = ts.getHost(username);
 		};
@@ -134,7 +132,8 @@ var ts = {
 		user.create(userCallback, userErrback);
 	},
 	forms: {
-		register: function(form) {
+		register: function(form, options) {
+			options = options || {};
 			$('<input type="hidden" name="csrf_token" />').val(window.getCSRFToken()).appendTo(form);
 			$(form).submit(function(ev) {
 				ev.preventDefault();
@@ -143,10 +142,10 @@ var ts = {
 				var passwordConfirm = $("[name=password_confirm]", form).val();
 				var validName = ts.isValidSpaceName(username);
 				if(validName && password && password === passwordConfirm) { // TODO: check password length?
-					ts.register(username, password, ev.target);
+					ts.register(username, password, ev.target, options);
 				} else {
 					var msg = validName ? ts.locale.passwordError : ts.locale.charError;
-					var options = { annotate: validName ? "[type=password]" : "[name=username]" };
+					options.annotate = validName ? "[type=password]" : "[name=username]";
 					ts.messages.display(form, msg, true, options);
 				}
 				return false;
