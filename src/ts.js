@@ -1,4 +1,4 @@
-// version 0.1.2
+// version 0.1.2dev
 var ts = {
 	locale: {
 		error: "An error occurred",
@@ -56,9 +56,7 @@ var ts = {
 				$(login).removeClass("tsInitializing");
 				ts.loadStatus(status);
 				// do login status
-				if(loginStatus) {
-					ts.loginStatus(loginStatus);
-				}
+				ts.loginStatus(loginStatus);
 				if(login) {
 					ts.forms.login(login);
 				}
@@ -189,6 +187,9 @@ var ts = {
 		var user = ts.user;
 		if(!user.anon) {
 			$(document.body).addClass("ts-loggedin");
+			if(!form) {
+				return;
+			}
 			var parent = form.parentNode;
 			$(parent).empty();
 			var container = $("<div />").appendTo(parent);
@@ -199,7 +200,9 @@ var ts = {
 			$("<span />").text("!").appendTo(container);
 			ts.forms.logout(container);
 		} else {
-			ts.forms.register(form);
+			if(form) {
+				ts.forms.register(form);
+			}
 		}
 	}
 };
