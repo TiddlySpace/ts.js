@@ -46,7 +46,7 @@ var ts = {
 	isValidSpaceName: function(name) {
 		return name.match(/^[a-z][0-9a-z\-]*[0-9a-z]$/) ? true : false;
 	},
-	init: function() {
+	init: function(callback) {
 		var loginStatus = $("form.registration").addClass("tsInitializing")[0];
 		var login = $("form.login").addClass("tsInitializing")[0];
 
@@ -61,6 +61,9 @@ var ts = {
 				}
 				if(login) {
 					ts.forms.login(login);
+				}
+				if(callback) {
+					callback();
 				}
 			}
 		});
