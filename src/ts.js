@@ -1,4 +1,4 @@
-// version 0.1.1
+// version 0.1.2
 var ts = {
 	locale: {
 		error: "An error occurred",
@@ -188,6 +188,7 @@ var ts = {
 		var status = ts.status;
 		var user = ts.user;
 		if(!user.anon) {
+			$(document.body).addClass("ts-loggedin");
 			var parent = form.parentNode;
 			$(parent).empty();
 			var container = $("<div />").appendTo(parent);
