@@ -277,7 +277,7 @@ var ts = {
 		}
 	},
 	loginStatus: function(login, register, logout) {
-		var openid = $("form.ts-openid")[0];
+		var openid = $("form.ts-openid");
 		var status = ts.status;
 		var user = ts.user;
 		if(!user.anon) {
@@ -303,7 +303,9 @@ var ts = {
 			}
 
 			if(openid) {
-				ts.forms.openid(openid);
+				openid.each(function(i, el) {
+					ts.forms.openid(el);
+				});
 			}
 			$(logout).remove();
 		}
