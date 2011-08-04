@@ -158,7 +158,7 @@ var ts = {
 					ts.login(space, password, {
 						success: function() {
 							// map user back to the openid
-							var tiddler = new tiddlyweb.Tiddler(name);
+							var tiddler = new tiddlyweb.Tiddler(openid);
 							tiddler.bag = new tiddlyweb.Bag("MAPUSER", "/");
 							var callback = function(data, status, xhr) {
 								// do redirect
