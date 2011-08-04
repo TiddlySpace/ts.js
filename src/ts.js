@@ -65,19 +65,18 @@ var ts = {
 		return name.match(/^[a-z][0-9a-z\-]*[0-9a-z]$/) ? true : false;
 	},
 	init: function(callback) {
-		var loginStatus = $("form.registration").addClass("tsInitializing")[0];
+		var register = $("form.registration").addClass("tsInitializing")[0];
 		var login = $("form.login").addClass("tsInitializing")[0];
+		var logout = $(".logout").addClass("tsInitializing")[0];
 
 		$.ajax({ url: "/status", 
 			success: function(status) {
-				$(loginStatus).removeClass("tsInitializing");
+				$(register).removeClass("tsInitializing");
 				$(login).removeClass("tsInitializing");
+				$(logout).removeClass("tsInitializing");
 				ts.loadStatus(status);
 				// do login status
-				ts.loginStatus(loginStatus);
-				if(login) {
-					ts.forms.login(login);
-				}
+				ts.loginStatus(login, register, logout);
 				if(callback) {
 					callback();
 				}
@@ -200,17 +199,16 @@ var ts = {
 			});
 		}
 	},
-	loginStatus: function(form) {
+	loginStatus: function(login, register, logout) {
 		var status = ts.status;
 		var user = ts.user;
 		if(!user.anon) {
 			$(document.body).addClass("ts-loggedin");
-			if(!form) {
+			$([register, login]).remove();
+			if(!logout) {
 				return;
 			}
-			var parent = form.parentNode;
-			$(parent).empty();
-			var container = $("<div />").appendTo(parent);
+			var container = logout;
 			var uri = ts.getHost(user.name);
 			var link = $("<a />").attr("href", uri).text(user.name)[0];
 			$("<span />").text("Welcome back ").appendTo(container);
@@ -218,9 +216,13 @@ var ts = {
 			$("<span />").text("!").appendTo(container);
 			ts.forms.logout(container);
 		} else {
-			if(form) {
-				ts.forms.register(form);
+			if(register) {
+				ts.forms.register(register);
 			}
+			if(login) {
+				ts.forms.login(login);
+			}
+			$(logout).remove();
 		}
 	}
 };
