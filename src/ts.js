@@ -65,6 +65,7 @@ var ts = {
 		return name.match(/^[a-z][0-9a-z\-]*[0-9a-z]$/) ? true : false;
 	},
 	init: function(callback) {
+		ts.loadHash();
 		var register = $("form.registration").addClass("tsInitializing")[0];
 		var login = $("form.login").addClass("tsInitializing")[0];
 		var logout = $(".logout").addClass("tsInitializing")[0];
@@ -120,6 +121,16 @@ var ts = {
 			success: success,
 			error: errback
 		});
+	},
+	parameters: {},
+	loadHash: function() {
+		var args = window.location.hash.substr(1).split("&");
+		for(var i = 0; i < args.length; i++) {
+			var nameval = args[i].split("=");
+			if(nameval.length == 2) {
+				ts.parameters[nameval[0]] = nameval[1];
+			}
+		}
 	},
 	register: function(username, password, form, options) {
 		options = options || {}
