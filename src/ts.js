@@ -72,6 +72,9 @@ var ts = {
 
 		$.ajax({ url: "/status", 
 			success: function(status) {
+				if(status.identity) {
+					ts.register_openid(status.identity);
+				}
 				$(register).removeClass("tsInitializing");
 				$(login).removeClass("tsInitializing");
 				$(logout).removeClass("tsInitializing");
@@ -130,6 +133,43 @@ var ts = {
 			if(nameval.length == 2) {
 				ts.parameters[nameval[0]] = nameval[1];
 			}
+		}
+	},
+	register_openid: function(openid) {
+		var space = ts.parameters.space;
+		if(space && openid) {
+			var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+			var password = "";
+			while(password.length < 16) {
+				password += possible.charAt(Math.floor(Math.random() * possible.length));
+			}
+			// register user with username of space and random password
+			ts.register(space, password, null, {
+				errback: function() {
+					throw "failed at step 1/3";
+				},
+				success: function() {
+					// login as that newly created user
+					ts.login(space, password, {
+						success: function() {
+							// map user back to the openid
+							var tiddler = new tiddlyweb.Tiddler(name);
+							tiddler.bag = new tiddlyweb.Bag("MAPUSER", "/");
+							var callback = function(data, status, xhr) {
+								// do redirect
+								window.location.href = window.location.href;
+							};
+							var errback = function(r) {
+								throw "failed at step 3/3";
+							};
+							tiddler.put(callback, errback);
+						},
+						errback: function() {
+							throw "failed at step 2/3";
+						}
+					});
+				}
+			});
 		}
 	},
 	register: function(username, password, form, options) {
