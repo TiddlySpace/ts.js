@@ -23,11 +23,22 @@ Note registration and logout are mutually exclusive.
 </form>
 
 <h2>OpenID</h2>
+<h3>Register</h3>
+<form class="ts-openid">
+  Register using openid
+  <input type="text" name="openid" placeholder="your openid" />
+	<input type="text" name="space" placeholder="space" />.tiddlyspace.com
+  <input type="hidden" name="redirect" value="/tiddlers.wiki" />
+	<input type="submit" value="Register" />
+	<a href="http://openid.net/get-an-openid/">What is an open id?</a>
+</form>
+
+<h3>Login</h3>
 <form class="ts-openid">
   Login using openid
   <input type="text" name="openid" placeholder="your openid" />
-	<input type="text" name="space" placeholder="space" />.tiddlyspace.com
-	<input type="submit" value="Register" />
+  <input type="hidden" name="redirect" value="/tiddlers.wiki" />
+	<input type="submit" value="Login" />
 	<a href="http://openid.net/get-an-openid/">What is an open id?</a>
 </form>
 
