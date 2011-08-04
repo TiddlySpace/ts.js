@@ -166,6 +166,25 @@ var ts = {
 				return false;
 			});
 		},
+		openid: function(form, options) {
+			$('<input type="hidden" name="csrf_token" />').val(window.getCSRFToken()).appendTo(form);
+			$(form).attr("method", "post").
+				attr("action", "/challenge/tiddlywebplugins.tiddlyspace.openid").
+				submit(function(ev) {
+				var user = $("input[name=openid]", form).val();
+				var space = $("input[name=space]", form).val();
+				if(!user) {
+					ev.preventDefault();
+					return ts.messages.display(form, "Please provide an openid!");
+				}
+				if(!space) {
+					ev.preventDefault();
+					return ts.messages.display(form, "Please provide a space name!");
+				}
+				$('<input name="tiddlyweb_redirect" type="hidden" />').
+					val(window.location.pathname + "#openid=" + user + "&space=" + space).appendTo(form);
+			});
+		},
 		logout: function(container) {
 			var form = $('<form method="POST" />').attr("action", "/logout").appendTo(container)[0];
 			$('<input type="hidden" name="csrf_token" />').val(window.getCSRFToken()).appendTo(form);
@@ -222,6 +241,11 @@ var ts = {
 			}
 			if(login) {
 				ts.forms.login(login);
+			}
+
+			var openid = $("form.ts-openid")[0];
+			if(openid) {
+				ts.forms.openid(openid);
 			}
 			$(logout).remove();
 		}
