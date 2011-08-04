@@ -171,7 +171,7 @@ var ts = {
 							tiddler.bag = new tiddlyweb.Bag("MAPUSER", "/");
 							var callback = function(data, status, xhr) {
 								// do redirect
-								window.location.href = window.location.href;
+								window.location.href = ts.parameters.redirect || "/";
 							};
 							var errback = function(r) {
 								throw "failed at step 3/3";
@@ -242,8 +242,9 @@ var ts = {
 					ev.preventDefault();
 					return ts.messages.display(form, "Please provide an openid!");
 				}
+				var redirect = $("[name=redirect]", form).val() || "/";
 				$('<input name="tiddlyweb_redirect" type="hidden" />').
-					val(window.location.pathname + "?openid=" + user + "&space=" + space).appendTo(form);
+					val(window.location.pathname + "?openid=" + user + "&space=" + space + "&redirect=" + redirect).appendTo(form);
 			});
 		},
 		logout: function(container) {
