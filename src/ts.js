@@ -127,7 +127,7 @@ var ts = {
 	},
 	parameters: {},
 	loadHash: function() {
-		var args = window.location.hash.substr(1).split("&");
+		var args = window.location.search.substr(1).split("&");
 		for(var i = 0; i < args.length; i++) {
 			var nameval = args[i].split("=");
 			if(nameval.length == 2) {
@@ -233,7 +233,7 @@ var ts = {
 					return ts.messages.display(form, "Please provide a space name!");
 				}
 				$('<input name="tiddlyweb_redirect" type="hidden" />').
-					val(window.location.pathname + "#openid=" + user + "&space=" + space).appendTo(form);
+					val(window.location.pathname + "?openid=" + user + "&space=" + space).appendTo(form);
 			});
 		},
 		logout: function(container) {
