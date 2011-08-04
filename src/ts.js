@@ -13,6 +13,11 @@ var getCSRFToken = function(window) {
 
 	return csrf_token;
 };
+$.ajaxSetup({
+	beforeSend: function(xhr) {
+		xhr.setRequestHeader("X-ControlView", "false");
+	}
+});
 
 window.getCSRFToken = getCSRFToken;
 })(window);
