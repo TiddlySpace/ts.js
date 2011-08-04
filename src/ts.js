@@ -275,11 +275,12 @@ var ts = {
 		}
 	},
 	loginStatus: function(login, register, logout) {
+		var openid = $("form.ts-openid")[0];
 		var status = ts.status;
 		var user = ts.user;
 		if(!user.anon) {
 			$(document.body).addClass("ts-loggedin");
-			$([register, login]).remove();
+			$([register, login, openid]).remove();
 			if(!logout) {
 				return;
 			}
@@ -299,7 +300,6 @@ var ts = {
 				ts.forms.login(login);
 			}
 
-			var openid = $("form.ts-openid")[0];
 			if(openid) {
 				ts.forms.openid(openid);
 			}
