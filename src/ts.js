@@ -208,6 +208,7 @@ var ts = {
 			if(!logout) {
 				return;
 			}
+			$(logout).empty();
 			var container = logout;
 			var uri = ts.getHost(user.name);
 			var link = $("<a />").attr("href", uri).text(user.name)[0];
