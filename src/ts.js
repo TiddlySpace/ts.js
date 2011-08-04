@@ -74,7 +74,9 @@ var ts = {
 		var register = $("form.registration").addClass("tsInitializing")[0];
 		var login = $("form.login").addClass("tsInitializing")[0];
 		var logout = $(".logout").addClass("tsInitializing")[0];
+		var openid = $("form.ts-openid")[0];
 
+		$("input[type=submit]", [login, logout, register, openid]).attr("disabled", true);
 		$.ajax({ url: "/status", 
 			success: function(status) {
 				if(status.identity) {
@@ -83,6 +85,7 @@ var ts = {
 				$(register).removeClass("tsInitializing");
 				$(login).removeClass("tsInitializing");
 				$(logout).removeClass("tsInitializing");
+				$("input[type=submit]", [login, logout, register, openid]).attr("disabled", false);
 				ts.loadStatus(status);
 				// do login status
 				ts.loginStatus(login, register, logout);
