@@ -1,0 +1,34 @@
+<html>
+<head>
+  <title>demo of ts.js</title>
+</head>
+<body>
+
+<h2>Registration</h2>
+Note registration and logout are mutually exclusive.
+<h2>Logout</h2>
+<div class="logout"></div>
+<form class="registration" action="" autocomplete="off">
+	<input type="text" name="username" placeholder="username" /> 
+	<input name="password" placeholder="password" /> 
+	<input name="password_confirm" placeholder="and again" /> 
+	<input type="submit" value="REGISTER" />
+</form>
+
+<h2>Login</h2>
+<form class="login" action="" autocomplete="off">
+	<input type="text" name="username" placeholder="username" /> 
+	<input type="password" name="password" placeholder="password" /> 
+	<input type="submit" value="Log In" />
+</form>
+
+<script type='text/javascript' src='http://tiddlyspace.com/bags/ts_public/tiddlers/jquery.min.js'></script>
+<script type='text/javascript' src='http://tiddlyspace.com/bags/ts_public/tiddlers/jquery-json.min.js'></script>
+<script type='text/javascript' src='http://tiddlyspace.com/bags/tiddlyspace/tiddlers/chrjs'></script>
+<script type='text/javascript' src='http://tiddlyspace.com/bags/tiddlyspace/tiddlers/chrjs.space'></script>
+<script type='text/javascript' src='http://tiddlyspace.com/bags/tiddlyspace/tiddlers/chrjs.users'></script>
+<script src="http://ts.tiddlyspace.com/bags/ts_public/tiddlers/ts.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+  ts.init(function() {});
+</body>
+</html>
