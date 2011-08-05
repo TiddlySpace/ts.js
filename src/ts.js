@@ -148,7 +148,7 @@ var ts = {
 		if(!space) {
 			var answer = confirm("Would you like to create a space with your openid: " + openid  + "?");
 			if(answer) {
-				space = prompt("What space name should we use?");
+				space = prompt("What would you like to be your TiddlySpace username?");
 			}
 		}
 		if(space && openid) {
