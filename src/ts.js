@@ -146,7 +146,7 @@ var ts = {
 	register_openid: function(openid) {
 		var space = ts.parameters.space;
 		if(!space) {
-			var answer = confirm("Would you like to create a space with your openid: " + space  + "?");
+			var answer = confirm("Would you like to create a space with your openid: " + openid  + "?");
 			if(answer) {
 				space = prompt("What space name should we use?");
 			}
@@ -242,9 +242,14 @@ var ts = {
 					ev.preventDefault();
 					return ts.messages.display(form, "Please provide an openid!");
 				}
+				var querystring = "?openid=" + user;
+				if(space) {
+					querystring += "&space=" + space;
+				}
+				querystring += "&redirect=" + redirect;
 				var redirect = $("[name=redirect]", form).val() || "/";
 				$('<input name="tiddlyweb_redirect" type="hidden" />').
-					val(window.location.pathname + "?openid=" + user + "&space=" + space + "&redirect=" + redirect).appendTo(form);
+					val(window.location.pathname + querystring).appendTo(form);
 			});
 		},
 		logout: function(container) {
