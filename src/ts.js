@@ -171,7 +171,7 @@ var ts = {
 							tiddler.bag = new tiddlyweb.Bag("MAPUSER", "/");
 							var callback = function(data, status, xhr) {
 								// do redirect
-								window.location.href = ts.parameters.redirect || "/";
+								window.location.href = ts.parameters.redirect || ts.getHost(space);
 							};
 							var errback = function(r) {
 								throw "failed at step 3/3";
@@ -246,8 +246,10 @@ var ts = {
 				if(space) {
 					querystring += "&space=" + space;
 				}
-				querystring += "&redirect=" + redirect;
-				var redirect = $("[name=redirect]", form).val() || "/";
+				var redirect = $("[name=redirect]", form).val();
+				if(redirect) {
+					querystring += "&redirect=" + redirect;
+				}
 				$('<input name="tiddlyweb_redirect" type="hidden" />').
 					val(window.location.pathname + querystring).appendTo(form);
 			});
