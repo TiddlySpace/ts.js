@@ -83,7 +83,7 @@ var ts = {
 					ts.register_openid(status.identity);
 				} else if(status.username && ts.parameters.openid) {
 					// open id login occurred so redirect to homespace
-					window.location.href = ts.getHost(status.username);
+					window.location.href = ts.parameters.redirect ? ts.parameters.redirect : ts.getHost(status.username);
 				}
 				$(register).removeClass("tsInitializing");
 				$(login).removeClass("tsInitializing");
