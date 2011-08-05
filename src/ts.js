@@ -291,7 +291,10 @@ var ts = {
 		var user = ts.user;
 		if(!user.anon) {
 			$(document.body).addClass("ts-loggedin");
-			$([register, login, openid]).remove();
+			$([register, login]).remove();
+			openid.each(function(i, el) {
+				$(el).remove();
+			});
 			if(!logout) {
 				return;
 			}
