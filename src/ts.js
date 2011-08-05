@@ -79,17 +79,17 @@ var ts = {
 		$("input[type=submit]", [login, logout, register, openid]).attr("disabled", true);
 		$.ajax({ url: "/status", 
 			success: function(status) {
+				$(register).removeClass("tsInitializing");
+				$(login).removeClass("tsInitializing");
+				$(logout).removeClass("tsInitializing");
+				$("input[type=submit]", [login, logout, register, openid]).attr("disabled", false);
+				ts.loadStatus(status);
 				if(status.identity) {
 					ts.register_openid(status.identity);
 				} else if(status.username && ts.parameters.openid) {
 					// open id login occurred so redirect to homespace
 					window.location.href = ts.parameters.redirect ? ts.parameters.redirect : ts.getHost(status.username);
 				}
-				$(register).removeClass("tsInitializing");
-				$(login).removeClass("tsInitializing");
-				$(logout).removeClass("tsInitializing");
-				$("input[type=submit]", [login, logout, register, openid]).attr("disabled", false);
-				ts.loadStatus(status);
 				// do login status
 				ts.loginStatus(login, register, logout);
 				if(callback) {
