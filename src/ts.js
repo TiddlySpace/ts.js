@@ -23,6 +23,7 @@ window.getCSRFToken = getCSRFToken;
 })(window);
 
 var ts = {
+	currentSpace: window.location.hostname.split(".")[0],
 	locale: {
 		error: "An error occurred",
 		tryAgain: "Please try again",
@@ -92,11 +93,16 @@ var ts = {
 				}
 				// do login status
 				ts.loginStatus(login, register, logout);
+				ts.forms.addMember($("form.ts-members")[0]);
+				ts.initLists();
 				if(callback) {
 					callback();
 				}
 			}
 		});
+	},
+	initLists: function() {
+		ts.lists.members();
 	},
 	loadStatus: function(status) {
 		ts.status = status;
@@ -214,10 +220,70 @@ var ts = {
 		var user = new tiddlyweb.User(username, password, "/");
 		user.create(userCallback, userErrback);
 	},
+	lists: {
+		members: function() {
+			var space = new tiddlyweb.Space(ts.currentSpace, "/");
+			var removeMember = function(ev) {
+				var list = $(ev).parents("ul.members")[0];
+				var item = $(ev.target).parents("li")[0];
+				var member = $(ev.target).data("member");
+				var callback = function() {
+					$(item).hide(200);
+				};
+				var errback = function() {
+					
+				}
+				space.members().remove(member, callback, errback);
+			};
+			var list = $("ul.ts-members").addClass("ts-loading")[0];
+			if(list) {
+				var callback = function(members) {
+					$(list).removeClass("ts-loading").empty();
+					members = members.sort();
+					for(var i = 0; i < members.length; i++) {
+						var item = $("<li />").appendTo(list)[0];
+						$("<a />").text(members[i]).attr("href", ts.getHost(members[i])).appendTo(item);
+						$("<button />").addClass("delete").data("member", members[i]).attr("member", members[i]).text("remove").
+							click(removeMember).appendTo(item);
+					}
+				};
+				var errback = function(xhr, error, exc) {
+					$(list).removeClass("ts-loading").empty();
+					$("<li class='annotation' />").text("Only members can see other members.").prependTo(list);
+				};
+				space.members().get(callback, errback);
+			}
+		}
+	},
 	forms: {
+		_csrf: function(form) {
+			$('<input type="hidden" name="csrf_token" />').val(window.getCSRFToken()).appendTo(form);
+		},
+		addMember: function(form, options) {
+			if(!form) {
+				return;
+			}
+			ts.forms._csrf(form);
+			$(form).submit(function(ev) {
+				ev.preventDefault();
+				var input = $("input[name=username]", form);
+				var username = input.val();
+				var callback = function(data, status, xhr) {
+					ts.lists.members($("ul.ts-members").empty()[0]);
+					input.val("");
+					ts.messages.reset(form);
+				};
+				var errback = function(xhr, error, exc) {
+					msg = "Add member failed.";
+					ts.messages.display(form, msg, true, { selector: "[name=username]" })
+				};
+				new tiddlyweb.Space(ts.currentSpace, "/").members().
+					add(username, callback, errback);
+			});
+		},
 		register: function(form, options) {
 			options = options || {};
-			$('<input type="hidden" name="csrf_token" />').val(window.getCSRFToken()).appendTo(form);
+			ts.forms._csrf(form);
 			$(form).submit(function(ev) {
 				ev.preventDefault();
 				var username = $("[name=username]", form).val();
@@ -235,7 +301,7 @@ var ts = {
 			});
 		},
 		openid: function(form, options) {
-			$('<input type="hidden" name="csrf_token" />').val(window.getCSRFToken()).appendTo(form);
+			ts.forms._csrf(form);
 			$(form).attr("method", "post").
 				attr("action", "/challenge/tiddlywebplugins.tiddlyspace.openid").
 				submit(function(ev) {
@@ -259,12 +325,12 @@ var ts = {
 		},
 		logout: function(container) {
 			var form = $('<form method="POST" />').attr("action", "/logout").appendTo(container)[0];
-			$('<input type="hidden" name="csrf_token" />').val(window.getCSRFToken()).appendTo(form);
+			ts.forms._csrf(form);
 			$('<input type="submit" class="button" value="Log out">').appendTo(form);
 		},
 		login: function(form) {
 			// do login
-			$('<input type="hidden" name="csrf_token" />').val(window.getCSRFToken()).appendTo(form);
+			ts.forms._csrf(form);
 			var options = {
 				errback: function(xhr, error, exc) {
 					var code = xhr.status;
