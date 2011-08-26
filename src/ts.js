@@ -106,6 +106,21 @@ var ts = {
 			}
 		});
 	},
+	getSpaces: function(callback) {
+		if(ts.spaces) {
+			callback(ts.spaces);
+		} else {
+			$.ajax({ url: "/spaces?mine=1", dataType: "json",
+				success: function(spaces) {
+					ts.spaces = spaces;
+					callback(ts.spaces);
+				},
+				error: function() {
+					ts.spaces = false;
+				}
+			});
+		}
+	},
 	initLists: function() {
 		ts.lists.members();
 	},
