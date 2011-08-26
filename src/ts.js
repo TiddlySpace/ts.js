@@ -1,4 +1,4 @@
-// version 0.3.0
+// version 0.3.0dev
 (function() {
 var getCSRFToken = function(window) {
 	// XXX: should not use RegEx - cf.
@@ -93,7 +93,7 @@ var ts = {
 				}
 				// do login status
 				ts.loginStatus(login, register, logout);
-				new tiddlyweb.Space(ts.currentSpace, ts.getHost()).members().get(function() {
+				new tiddlyweb.Space(ts.currentSpace, ts.getHost(ts.currentSpace)).members().get(function() {
 					$(document.body).addClass("ts-member");
 					ts.forms.addMember($("form.ts-members")[0]);
 				}, function() {
