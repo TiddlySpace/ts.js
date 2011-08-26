@@ -274,8 +274,24 @@ var ts = {
 					ts.messages.reset(form);
 				};
 				var errback = function(xhr, error, exc) {
-					msg = "Add member failed.";
-					ts.messages.display(form, msg, true, { selector: "[name=username]" })
+					if(xhr.status === 409) { // conflict
+						new tiddlyweb.Space(username, "/").members().get(function(members) {
+							var spaceMembers = new tiddlyweb.Space(ts.currentSpace, "/").members();
+							for(var i = 0; i < members.length; i++) {
+								spaceMembers.add(members[i], callback, errback);
+							}
+						}, function(xhr2) {
+							if(xhr2.status === 403) {
+								ts.messages.display(form, "Unable to add members from a space you are not a member of",
+									true, { selector: "[name=username]" });
+							} else {
+								ts.messages.display(form, "Unknown username entered.", true, { selector: "[name=username]" });
+							}
+						});
+					} else {
+						msg = "Unknown error occurred.";
+						ts.messages.display(form, msg, true, { selector: "[name=username]" });
+					}
 				};
 				new tiddlyweb.Space(ts.currentSpace, "/").members().
 					add(username, callback, errback);
