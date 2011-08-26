@@ -93,7 +93,12 @@ var ts = {
 				}
 				// do login status
 				ts.loginStatus(login, register, logout);
-				ts.forms.addMember($("form.ts-members")[0]);
+				new tiddlyweb.Space(ts.currentSpace, ts.getHost()).members().get(function() {
+					$(document.body).addClass("ts-member");
+					ts.forms.addMember($("form.ts-members")[0]);
+				}, function() {
+					$(document.body).addClass("ts-nonmember");
+				});
 				ts.initLists();
 				if(callback) {
 					callback();
