@@ -1,0 +1,6 @@
+.ts-loading {
+	background-image: url(/ajax-loader.gif);
+	background-repeat: no-repeat;
+	height: 30px;
+	width: 30px;
+}
