@@ -32,7 +32,10 @@ var ts = {
 			"letters, digits or hyphens",
 		spaceSuccess: "Successfully created space.",
 		userError: "Username is already taken, please choose another.",
-		passwordError: "Passwords do not match"
+		passwordError: "Passwords do not match",
+		invalidSpaceError: ["error: invalid space name - must start with a letter, be ",
+			"at least two characters in length and only contain lowercase ",
+			"letters, digits or hyphens"].join("")
 	},
 	status: {},
 	user: {},
@@ -96,6 +99,7 @@ var ts = {
 				new tiddlyweb.Space(ts.currentSpace, ts.getHost(ts.currentSpace)).members().get(function() {
 					$(document.body).addClass("ts-member");
 					ts.forms.addMember($("form.ts-members")[0]);
+					ts.forms.addSpace($("form.ts-spaces")[0]);
 				}, function() {
 					$(document.body).addClass("ts-nonmember");
 				});
@@ -240,6 +244,15 @@ var ts = {
 		var user = new tiddlyweb.User(username, password, "/");
 		user.create(userCallback, userErrback);
 	},
+	createSpace: function(form, spaceName, callback, errback) {
+		if(ts.isValidSpaceName(spaceName)) {
+			var space = new tiddlyweb.Space(spaceName, ts.getHost(ts.currentSpace));
+			space.create(callback, errback);
+		} else {
+			ts.messages.display(form, ts.locale.invalidSpaceError,
+				true, { selector: "[name=space]" });
+		}
+	},
 	lists: {
 		members: function() {
 			var space = new tiddlyweb.Space(ts.currentSpace, "/");
@@ -315,6 +328,27 @@ var ts = {
 				};
 				new tiddlyweb.Space(ts.currentSpace, "/").members().
 					add(username, callback, errback);
+			});
+		},
+		addSpace: function(form) {
+			if(!form) {
+				return;
+			}
+			var selector = "[name=spacename]";
+			ts.forms._csrf(form);
+			$(form).submit(function(ev) {
+				ev.preventDefault();
+				var spaceName = $(selector, form).val() || "";
+				var callback = function() {
+					var host = ts.getHost(spaceName);
+					var msg = "Successfully created <a href='" + host + "'>" + host + "</a>."; 
+					ts.messages.display(form, msg, false, { selector: selector });
+				};
+				var errback = function() {
+					var msg = "Problem creating a space with that name.";
+					ts.messages.display(form, msg, true, { selector: selector });
+				};
+				ts.createSpace(form, spaceName, callback, errback);
 			});
 		},
 		register: function(form, options) {
