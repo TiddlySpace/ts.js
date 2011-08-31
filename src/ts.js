@@ -127,6 +127,7 @@ var ts = {
 	},
 	initLists: function() {
 		ts.lists.members();
+		ts.lists.includes();
 	},
 	loadStatus: function(status) {
 		ts.status = status;
@@ -254,6 +255,35 @@ var ts = {
 		}
 	},
 	lists: {
+		includes: function() {
+			var space = new tiddlyweb.Space(ts.currentSpace, "/");
+			var removeInclusion = function(ev) {
+				var item = $(ev.target).parents("li")[0];
+				var member = $(ev.target).data("member");
+				var callback = function() {
+					$(item).hide(200);
+				};
+				var errback = function() {};
+				space.includes().remove(member, callback, errback);
+			};
+			var list = $("ul.ts-includes").addClass("ts-loading")[0];
+			if(list) {
+				var callback = function(inclusions) {
+					$(list).removeClass("ts-loading").empty();
+					for(var i = 0; i < inclusions.length; i++) {
+						var item = $("<li />").appendTo(list)[0];
+						$("<a />").text(members[i]).attr("href", ts.getHost(inclusions[i])).appendTo(item);
+						$("<button />").addClass("delete").data("inclusion", inclusions[i]).attr("inclusion", inclusions[i]).text("remove").
+							click(removeInclusion).appendTo(item);
+					}
+				};
+				var errback = function(xhr, error, exc) {
+					$(list).removeClass("ts-loading").empty();
+					$("<li class='annotation' />").text("Only members can see other inclusions.").prependTo(list);
+				};
+				space.includes().get(callback, errback);
+			}
+		},
 		members: function() {
 			var space = new tiddlyweb.Space(ts.currentSpace, "/");
 			var removeMember = function(ev) {
