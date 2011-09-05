@@ -272,7 +272,7 @@ var ts = {
 					$(list).removeClass("ts-loading").empty();
 					for(var i = 0; i < inclusions.length; i++) {
 						var item = $("<li />").appendTo(list)[0];
-						$("<a />").text(members[i]).attr("href", ts.getHost(inclusions[i])).appendTo(item);
+						$("<a />").text(inclusions[i]).attr("href", ts.getHost(inclusions[i])).appendTo(item);
 						$("<button />").addClass("delete").data("inclusion", inclusions[i]).attr("inclusion", inclusions[i]).text("remove").
 							click(removeInclusion).appendTo(item);
 					}
