@@ -98,6 +98,7 @@ var ts = {
 				ts.loginStatus(login, register, logout);
 				new tiddlyweb.Space(ts.currentSpace, ts.getHost(ts.currentSpace)).members().get(function() {
 					$(document.body).addClass("ts-member");
+					ts.forms.addInclude($("form.ts-includes")[0]);
 					ts.forms.addMember($("form.ts-members")[0]);
 					ts.forms.addSpace($("form.ts-spaces")[0]);
 				}, function() {
@@ -321,6 +322,28 @@ var ts = {
 	forms: {
 		_csrf: function(form) {
 			$('<input type="hidden" name="csrf_token" />').val(window.getCSRFToken()).appendTo(form);
+		},
+		addInclude: function(form, options) {
+			if(!form) {
+				return;
+			}
+			ts.forms._csrf(form);
+			$(form).submit(function(ev) {
+				ev.preventDefault();
+				var input = $("input[name=spacename]", form);
+				var space = input.val();
+				var callback = function(data, status, xhr) {
+					ts.lists.includes($("ul.ts-includes").empty()[0]);
+					input.val("");
+					ts.messages.reset(form);
+				};
+				var errback = function(xhr, error, exc) {
+					msg = "Unable to include space with that name.";
+					ts.messages.display(form, msg, true, { selector: "[name=spacename]" });
+				};
+				new tiddlyweb.Space(ts.currentSpace, "/").includes().
+					add(space, callback, errback);
+			});
 		},
 		addMember: function(form, options) {
 			if(!form) {
