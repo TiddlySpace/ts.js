@@ -259,12 +259,12 @@ var ts = {
 			var space = new tiddlyweb.Space(ts.currentSpace, "/");
 			var removeInclusion = function(ev) {
 				var item = $(ev.target).parents("li")[0];
-				var member = $(ev.target).data("member");
+				var target_space = $(ev.target).data("inclusion");
 				var callback = function() {
 					$(item).hide(200);
 				};
 				var errback = function() {};
-				space.includes().remove(member, callback, errback);
+				space.includes().remove(target_space, callback, errback);
 			};
 			var list = $("ul.ts-includes").addClass("ts-loading")[0];
 			if(list) {
