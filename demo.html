@@ -66,6 +66,7 @@ Not yet.
   <input type="text" name="spacename">
   <input type="submit" value="Add Space" />
 </form>
+<div class='space_info'></div>
 
 <script type='text/javascript' src='http://tiddlyspace.com/bags/ts_public/tiddlers/jquery.min.js'></script>
 <script type='text/javascript' src='http://tiddlyspace.com/bags/ts_public/tiddlers/jquery-json.min.js'></script>
@@ -74,7 +75,11 @@ Not yet.
 <script type='text/javascript' src='http://tiddlyspace.com/bags/tiddlyspace/tiddlers/chrjs.users'></script>
 <script src="/ts.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
-  ts.init(function() {});
+  ts.init(function() {
+    ts.getSpaces(function(spaces) {
+      $(".space_info").text("You have " + spaces.length + " spaces!");
+    });
+  });
 </script>
 </body>
 </html>
