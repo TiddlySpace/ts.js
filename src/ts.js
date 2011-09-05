@@ -1,4 +1,4 @@
-// version 0.3.2
+// version 0.3.3
 (function() {
 var getCSRFToken = function(window) {
 	// XXX: should not use RegEx - cf.
