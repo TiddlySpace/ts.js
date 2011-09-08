@@ -11,6 +11,7 @@ Note registration and logout are mutually exclusive.
 	<input type="text" name="username" placeholder="username" /> 
 	<input name="password" placeholder="password" /> 
 	<input name="password_confirm" placeholder="and again" /> 
+	<input type="hidden" name="redirect" value="/tiddlers.wiki" />
 	<input type="submit" value="REGISTER" />
 </form>
 <h2>Logout</h2>
@@ -19,7 +20,8 @@ Note registration and logout are mutually exclusive.
 <h2>Login</h2>
 <form class="login" action="" autocomplete="off">
 	<input type="text" name="username" placeholder="username" /> 
-	<input type="password" name="password" placeholder="password" /> 
+	<input type="password" name="password" placeholder="password" />
+	<input type="hidden" name="redirect" value="/tiddlers.wiki" />
 	<input type="submit" value="Log In" />
 </form>
 

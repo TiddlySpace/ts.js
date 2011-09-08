@@ -165,7 +165,7 @@ var ts = {
 		var status = ts.status;
 		options = options || {};
 		var success = options.success || function() {
-			window.location = ts.getHost(username);
+			window.location = options.redirect || ts.getHost(username);
 		};
 		var errback = options.errback || function() {};
 		var challenger = options.challenger ? options.challenger : "tiddlywebplugins.tiddlyspace.cookie_form";
@@ -238,7 +238,7 @@ var ts = {
 		options = options || {}
 		var spaceCallback = options.success || function() {
 			ts.messages.display(form, ts.locale.spaceSuccess, true);
-			window.location = ts.getHost(username);
+			window.location = options.redirect || ts.getHost(username);
 		};
 		var spaceErrback = function(xhr, error, exc) {
 			var msg = xhr.status === 409 ? ts.locale.userError : false; // XXX: 409 unlikely to occur at this point
@@ -424,6 +424,7 @@ var ts = {
 				ev.preventDefault();
 				var username = $("[name=username]", form).val();
 				var password = $("[name=password]", form).val();
+				options.redirect = $("[name=redirect]", form).val();
 				var passwordConfirm = $("[name=password_confirm]", form).val();
 				var validName = ts.isValidSpaceName(username);
 				if(validName && password && password === passwordConfirm) { // TODO: check password length?
@@ -486,6 +487,7 @@ var ts = {
 				if(!pass) {
 					return ts.messages.display(form, "Please provide a password!");
 				}
+				options.redirect = $("input[name=redirect]", form).val();
 				ts.login(user,
 					pass, options);
 				ev.preventDefault();
