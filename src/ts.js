@@ -70,16 +70,18 @@ var ts = {
 			$(".inputArea", form).show();
 		}
 	},
-	resolveCurrentSpaceName: function() {
-		if(window.location.protocol !== "file:") {
+	resolveCurrentSpaceName: function(options) {
+		if(options && options.space) {
+			ts.currentSpace = options.space;
+		}else if(window.location.protocol !== "file:") {
 			ts.currentSpace = window.location.hostname.split(".")[0];
 		}
 	},
 	isValidSpaceName: function(name) {
 		return name.match(/^[a-z][0-9a-z\-]*[0-9a-z]$/) ? true : false;
 	},
-	init: function(callback) {
-		ts.resolveCurrentSpaceName();
+	init: function(callback, options) {
+		ts.resolveCurrentSpaceName(options);
 		ts.loadHash();
 		var register = $("form.registration").addClass("tsInitializing")[0];
 		var login = $("form.login").addClass("tsInitializing")[0];
