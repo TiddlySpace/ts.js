@@ -102,20 +102,25 @@ var ts = {
 				}
 				// do login status
 				ts.loginStatus(login, register, logout);
-				new tiddlyweb.Space(ts.currentSpace, ts.getHost(ts.currentSpace)).members().get(function() {
-					$(document.body).addClass("ts-member");
-					ts.forms.addInclude($("form.ts-includes")[0]);
-					ts.forms.addMember($("form.ts-members")[0]);
-					ts.forms.addSpace($("form.ts-spaces")[0]);
-				}, function() {
-					$(document.body).addClass("ts-nonmember");
-				});
-				ts.initLists();
+				if(ts.currentSpace) {
+					ts.initForSpace_();
+				}
 				if(callback) {
 					callback();
 				}
 			}
 		});
+	},
+	initForSpace_: function() {
+		new tiddlyweb.Space(ts.currentSpace, ts.getHost(ts.currentSpace)).members().get(function() {
+			$(document.body).addClass("ts-member");
+			ts.forms.addInclude($("form.ts-includes")[0]);
+			ts.forms.addMember($("form.ts-members")[0]);
+			ts.forms.addSpace($("form.ts-spaces")[0]);
+		}, function() {
+			$(document.body).addClass("ts-nonmember");
+		});
+		ts.initLists();
 	},
 	getSpaces: function(callback) {
 		if(ts.spaces) {
