@@ -73,7 +73,7 @@ var ts = {
 	resolveCurrentSpaceName: function(options) {
 		if(options && options.space) {
 			ts.currentSpace = options.space;
-		}else if(window.location.protocol !== "file:") {
+		} else if(window.location.protocol !== "file:") {
 			ts.currentSpace = window.location.hostname.split(".")[0];
 		}
 	},
