@@ -23,7 +23,7 @@ window.getCSRFToken = getCSRFToken;
 })(window);
 
 var ts = {
-	currentSpace: window.location.hostname.split(".")[0],
+	currentSpace: false,
 	locale: {
 		error: "An error occurred",
 		tryAgain: "Please try again",
@@ -70,10 +70,16 @@ var ts = {
 			$(".inputArea", form).show();
 		}
 	},
+	resolveCurrentSpaceName: function() {
+		if(window.location.protocol !== "file:") {
+			ts.currentSpace = window.location.hostname.split(".")[0];
+		}
+	},
 	isValidSpaceName: function(name) {
 		return name.match(/^[a-z][0-9a-z\-]*[0-9a-z]$/) ? true : false;
 	},
 	init: function(callback) {
+		ts.resolveCurrentSpaceName();
 		ts.loadHash();
 		var register = $("form.registration").addClass("tsInitializing")[0];
 		var login = $("form.login").addClass("tsInitializing")[0];
