@@ -71,7 +71,7 @@ var ts = {
 		}
 	},
 	resolveCurrentSpaceName: function(options) {
-		if(options && options.space) {
+		if(options && typeof(options.space) != "undefined") {
 			ts.currentSpace = options.space;
 		} else if(window.location.protocol !== "file:") {
 			ts.currentSpace = window.location.hostname.split(".")[0];

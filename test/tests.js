@@ -19,3 +19,8 @@ test("resolveCurrentSpaceName", function() {
 	ts.init(NOP, { space: "foo" });
 	strictEqual(ts.currentSpace, "foo", "current space reflects the passed in parameter")
 });
+
+test("resolveCurrentSpaceName to false", function() {
+	ts.init(NOP, { space: false });
+	strictEqual(ts.currentSpace, false, "false is recognised as a current space");
+});
