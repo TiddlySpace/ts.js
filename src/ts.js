@@ -103,6 +103,7 @@ var ts = {
 					window.location.href = ts.parameters.redirect ? ts.parameters.redirect : ts.getHost(status.username);
 				}
 				// do login status
+				ts.forms.password($("form.ts-password")[0]);
 				ts.loginStatus(login, register, logout);
 				if(ts.currentSpace) {
 					ts.initForSpace_();
@@ -268,6 +269,18 @@ var ts = {
 				true, { selector: "[name=space]" });
 		}
 	},
+	changePassword: function(username, password, npassword, form) {
+		var pwCallback = function() {
+			var msg = "Successfully changed your password.";
+			ts.messages.display(form, msg);
+		};
+		var pwErrback = function() {
+			var msg = "Old password is incorrect.";
+			ts.messages.display(form, msg, true, { selector: "[name=password]" });
+		};
+		var user = new tiddlyweb.User(username, password, "/");
+		user.setPassword(npassword, pwCallback, pwErrback);
+	},
 	lists: {
 		includes: function() {
 			var space = new tiddlyweb.Space(ts.currentSpace, "/");
@@ -333,6 +346,26 @@ var ts = {
 		}
 	},
 	forms: {
+		password: function(form) {
+			$(form).submit(function(ev) {
+				ev.preventDefault();
+				var oldPass = $("[name=password]").val();
+				var newPass = $("[name=new_password]").val();
+				var newPass2 = $("[name=new_password_confirm]").val();
+				if(newPass !== newPass2) {
+					var msg = "Passwords do not match";
+					ts.messages.display(form, msg, true,
+						{ selector: "[name=new_password], [name=new_password_confirm]" });
+				} else if(newPass.length < 6) {
+					var msg = "Error: password must be at least 6 characters";
+					ts.messages.display(form, msg, true, 
+						{ selector: "[name=new_password],[name=new_password_confirm]" });
+				} else {
+					ts.changePassword(ts.user.name, oldPass, newPass, form);
+				}
+				return false;
+			});
+		},
 		_csrf: function(form) {
 			$('<input type="hidden" name="csrf_token" />').val(window.getCSRFToken()).appendTo(form);
 		},
