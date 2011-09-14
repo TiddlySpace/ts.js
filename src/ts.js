@@ -541,15 +541,14 @@ var ts = {
 		}
 	},
 	loginStatus: function(login, register, logout) {
-		var openid = $("form.ts-openid");
 		var status = ts.status;
 		var user = ts.user;
+		$("form.ts-openid").each(function(i, el) {
+			ts.forms.openid(el, { user: user });
+		});
 		if(!user.anon) {
 			$(document.body).addClass("ts-loggedin");
 			$([register, login]).remove();
-			openid.each(function(i, el) {
-				$(el).remove();
-			});
 			if(!logout) {
 				return;
 			}
@@ -569,11 +568,6 @@ var ts = {
 				ts.forms.login(login);
 			}
 
-			if(openid) {
-				openid.each(function(i, el) {
-					ts.forms.openid(el);
-				});
-			}
 			$(logout).remove();
 		}
 	}
