@@ -488,15 +488,19 @@ var ts = {
 			$(form).attr("method", "post").
 				attr("action", "/challenge/tiddlywebplugins.tiddlyspace.openid").
 				submit(function(ev) {
-				var user = $("input[name=openid]", form).val();
+				var identity = $("input[name=openid]", form).val();
 				var space = $("input[name=space]", form).val();
-				if(!user) {
+				var user = options && options.user ? options.user.name : null;
+				if(!identity) {
 					ev.preventDefault();
 					return ts.messages.display(form, "Please provide an openid!");
 				}
-				var querystring = "?openid=" + user;
+				var querystring = "?openid=" + identity;
 				if(space) {
 					querystring += "&space=" + space;
+				}
+				if(user) {
+					querystring += "&user=" + user;
 				}
 				var redirect = $("[name=redirect]", form).val();
 				if(redirect) {
