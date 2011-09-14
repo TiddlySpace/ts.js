@@ -88,7 +88,7 @@ Not yet.
 <script type='text/javascript' src='http://tiddlyspace.com/bags/tiddlyspace/tiddlers/chrjs.users'></script>
 <script src="/ts.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
-  ts.init(function() {
+  ts.init(function(ts) {
     ts.getSpaces(function(spaces) {
       $(".space_info").text("You have " + spaces.length + " spaces!");
     });

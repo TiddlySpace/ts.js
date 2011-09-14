@@ -20,7 +20,6 @@ $.ajaxSetup({
 });
 
 window.getCSRFToken = getCSRFToken;
-})(window);
 
 var ts = {
 	currentSpace: false,
@@ -109,7 +108,7 @@ var ts = {
 					ts.initForSpace_();
 				}
 				if(callback) {
-					callback();
+					callback(ts);
 				}
 			}
 		});
@@ -565,3 +564,9 @@ var ts = {
 		}
 	}
 };
+window.ts = {
+	init: ts.init
+};
+
+})(window);
+
