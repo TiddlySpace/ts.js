@@ -95,7 +95,7 @@ var ts = {
 				$(logout).removeClass("tsInitializing");
 				$("input[type=submit]", [login, logout, register, openid]).attr("disabled", false);
 				ts.loadStatus(status);
-				if(status.identity) {
+				if(status.identity || ts.parameters.openid) {
 					ts.register_openid(status.identity);
 				} else if(status.username && ts.parameters.openid) {
 					// open id login occurred so redirect to homespace
@@ -192,9 +192,18 @@ var ts = {
 			}
 		}
 	},
+	_register_openid_for_user: function(username, openid) {
+		var user = new tiddlyweb.User(username, null, ts.getHost(ts.currentSpace));
+		user.identities().add(openid, function() {
+			window.location.href = window.location.pathname;
+		}, function() {
+			throw "failed to add identity to current user.";
+		});
+	},
 	register_openid: function(openid) {
 		var space = ts.parameters.space;
-		if(!space) {
+		var username = ts.parameters.user;
+		if(!space && !username) {
 			var answer = confirm("Would you like to create a space with your openid: " + openid  + "?");
 			if(answer) {
 				space = prompt("What would you like to be your TiddlySpace username?");
@@ -215,17 +224,7 @@ var ts = {
 					// login as that newly created user
 					ts.login(space, password, {
 						success: function() {
-							// map user back to the openid
-							var tiddler = new tiddlyweb.Tiddler(openid);
-							tiddler.bag = new tiddlyweb.Bag("MAPUSER", "/");
-							var callback = function(data, status, xhr) {
-								// do redirect
-								window.location.href = ts.parameters.redirect || ts.getHost(space);
-							};
-							var errback = function(r) {
-								throw "failed at step 3/3";
-							};
-							tiddler.put(callback, errback);
+							ts._register_openid_for_user(space, ts.parameters.openid);
 						},
 						errback: function() {
 							throw "failed at step 2/3";
@@ -233,6 +232,8 @@ var ts = {
 					});
 				}
 			});
+		} else if(username) {
+			ts._register_openid_for_user(username, ts.parameters.openid);
 		}
 	},
 	register: function(username, password, form, options) {
@@ -506,8 +507,10 @@ var ts = {
 				if(redirect) {
 					querystring += "&redirect=" + redirect;
 				}
+				// IMPORTANT: #auth:OpenID=<openid> is read by the openid tiddlyweb plugin
+				// when present it keeps you logged in as your cookie username
 				$('<input name="tiddlyweb_redirect" type="hidden" />').
-					val(window.location.pathname + querystring).appendTo(form);
+					val(window.location.pathname + querystring + "#auth:OpenID=" + identity).appendTo(form);
 			});
 		},
 		logout: function(container) {
