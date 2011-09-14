@@ -82,9 +82,9 @@ var ts = {
 	init: function(callback, options) {
 		ts.resolveCurrentSpaceName(options);
 		ts.loadHash();
-		var register = $("form.registration").addClass("tsInitializing")[0];
-		var login = $("form.login").addClass("tsInitializing")[0];
-		var logout = $(".logout").addClass("tsInitializing")[0];
+		var register = $("form.ts-registration").addClass("tsInitializing")[0];
+		var login = $("form.ts-login").addClass("tsInitializing")[0];
+		var logout = $(".ts-logout").addClass("tsInitializing")[0];
 		var openid = $("form.ts-openid")[0];
 
 		$("input[type=submit]", [login, logout, register, openid]).attr("disabled", true);
@@ -140,6 +140,7 @@ var ts = {
 		}
 	},
 	initLists: function() {
+		ts.lists.identities();
 		ts.lists.members();
 		ts.lists.includes();
 	},
@@ -281,6 +282,19 @@ var ts = {
 		user.setPassword(npassword, pwCallback, pwErrback);
 	},
 	lists: {
+		identities: function() {
+			var list = $("ul.ts-identities").addClass("ts-loading")[0];
+			var user = new tiddlyweb.User(ts.user.name, null, "/");
+			user.identities().get(
+				function(identities) {
+					$(list).removeClass("ts-loading").empty();
+					for(var i = 0; i < identities.length; i++) {
+						$("<li />").text(identities[i]).appendTo(list);
+					}
+				}, function() {
+					$(list).removeClass("ts-loading").empty();
+				});
+		},
 		includes: function() {
 			var space = new tiddlyweb.Space(ts.currentSpace, "/");
 			var removeInclusion = function(ev) {

@@ -7,7 +7,7 @@
 
 <h2>Registration</h2>
 Note registration and logout are mutually exclusive.
-<form class="registration" action="" autocomplete="off">
+<form class="ts-registration" action="" autocomplete="off">
 	<input type="text" name="username" placeholder="username" /> 
 	<input name="password" placeholder="password" /> 
 	<input name="password_confirm" placeholder="and again" /> 
@@ -15,10 +15,10 @@ Note registration and logout are mutually exclusive.
 	<input type="submit" value="REGISTER" />
 </form>
 <h2>Logout</h2>
-<div class="logout"></div>
+<div class="ts-logout"></div>
 
 <h2>Login</h2>
-<form class="login" action="" autocomplete="off">
+<form class="ts-login" action="" autocomplete="off">
 	<input type="text" name="username" placeholder="username" /> 
 	<input type="password" name="password" placeholder="password" />
 	<input type="hidden" name="redirect" value="/tiddlers.wiki" />
@@ -64,7 +64,7 @@ Note registration and logout are mutually exclusive.
 </form>
 
 <h3>Identities</h3>
-Not yet.
+<ul class="ts-identities"></ul>
 
 <h3>Password</h3>
 <form class="ts-password">
@@ -86,6 +86,7 @@ Not yet.
 <script type='text/javascript' src='http://tiddlyspace.com/bags/tiddlyspace/tiddlers/chrjs'></script>
 <script type='text/javascript' src='http://tiddlyspace.com/bags/tiddlyspace/tiddlers/chrjs.space'></script>
 <script type='text/javascript' src='http://tiddlyspace.com/bags/tiddlyspace/tiddlers/chrjs.users'></script>
+<script type='text/javascript' src='/chrjs.identities.js'></script>
 <script src="/ts.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
   ts.init(function(ts) {
