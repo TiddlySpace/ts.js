@@ -6,6 +6,11 @@ var IdentitiesCollection = function(user) {
 };
 IdentitiesCollection.prototype = new tiddlyweb.Collection();
 jQuery.extend(IdentitiesCollection.prototype, {
+	add: function(identity, callback, errback) {
+		var tiddler = new tiddlyweb.Tiddler(identity);
+		tiddler.bag = new tiddlyweb.Bag("MAPUSER", this.host);
+		tiddler.put(callback, errback);
+	},
 	get: function(callback, errback) {
 		var uri = this.route();
 		jQuery.ajax({
