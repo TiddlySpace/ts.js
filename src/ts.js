@@ -69,18 +69,19 @@ var ts = {
 			$(".inputArea", form).show();
 		}
 	},
-	resolveCurrentSpaceName: function(options) {
+	resolveCurrentSpaceName: function(options, host) {
 		if(options && typeof(options.space) != "undefined") {
 			ts.currentSpace = options.space;
 		} else if(window.location.protocol !== "file:") {
-			ts.currentSpace = window.location.hostname.split(".")[0];
+			if(host.split(".").length == window.location.hostname.split(".")) {
+				ts.currentSpace = window.location.hostname.split(".")[0];
+			}
 		}
 	},
 	isValidSpaceName: function(name) {
 		return name.match(/^[a-z][0-9a-z\-]*[0-9a-z]$/) ? true : false;
 	},
 	init: function(callback, options) {
-		ts.resolveCurrentSpaceName(options);
 		ts.loadHash();
 		var register = $("form.ts-registration").addClass("tsInitializing")[0];
 		var login = $("form.ts-login").addClass("tsInitializing")[0];
@@ -90,6 +91,10 @@ var ts = {
 		$("input[type=submit]", [login, logout, register, openid]).attr("disabled", true);
 		$.ajax({ url: "/status", 
 			success: function(status) {
+				ts.resolveCurrentSpaceName(options, status.server_host.host);
+				if(!ts.currentSpace) {
+					$(document.body).addClass("ts-unknown-space");
+				}
 				$(register).removeClass("tsInitializing");
 				$(login).removeClass("tsInitializing");
 				$(logout).removeClass("tsInitializing");
