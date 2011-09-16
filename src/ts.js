@@ -284,7 +284,12 @@ var ts = {
 	},
 	lists: {
 		identities: function() {
-			var list = $("ul.ts-identities").addClass("ts-loading")[0];
+			var list = $("ul.ts-identities")[0];
+			if(!list) {
+				return;
+			} else {
+				$(list).addClass("ts-loading");
+			}
 			var user = new tiddlyweb.User(ts.user.name, null, "/");
 			user.identities().get(
 				function(identities) {
