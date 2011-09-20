@@ -572,7 +572,8 @@ var ts = {
 			$(logout).empty();
 			var container = logout;
 			var uri = ts.getHost(user.name);
-			var link = $("<a />").attr("href", uri).text(user.name)[0];
+			var link = $("<a />").attr({"href": uri,
+				"target": "_parent"}).text(user.name)[0];
 			$("<span />").text("Welcome back ").appendTo(container);
 			$(container).append(link);
 			$("<span />").text("!").appendTo(container);
