@@ -523,10 +523,27 @@ var ts = {
 					val(window.location.pathname + querystring + "#auth:OpenID=" + identity).appendTo(form);
 			});
 		},
-		logout: function(container) {
-			var form = $('<form method="POST" />').attr("action", "/logout").appendTo(container)[0];
+		logout: function(form_or_container) {
+			if(!form_or_container) {
+				return;
+			}
+			var tag = form_or_container.nodeName;
+			var form;
+			var isContainer = tag !== "FORM";
+			if(isContainer) {
+				var uri = ts.getHost(ts.user.name);
+				var link = $("<a />").attr({"href": uri,
+					"target": "_parent"}).text(ts.user.name)[0];
+				$("<span class='message' />").text("Welcome back ").appendTo(form_or_container);
+				$(form_or_container).append(link);
+				$("<span />").text("!").appendTo(form_or_container);
+				form = $('<form />').appendTo(form_or_container)[0];
+				$('<input type="submit" class="button" value="Log out">').appendTo(form);
+			}  else {
+				form = form_or_container;
+			}
+			$(form_or_container).attr("action", "/logout").attr("method", "post");
 			ts.forms._csrf(form);
-			$('<input type="submit" class="button" value="Log out">').appendTo(form);
 		},
 		login: function(form) {
 			// do login
@@ -570,14 +587,9 @@ var ts = {
 				return;
 			}
 			$(logout).empty();
-			var container = logout;
-			var uri = ts.getHost(user.name);
-			var link = $("<a />").attr({"href": uri,
-				"target": "_parent"}).text(user.name)[0];
-			$("<span />").text("Welcome back ").appendTo(container);
-			$(container).append(link);
-			$("<span />").text("!").appendTo(container);
-			ts.forms.logout(container);
+			$(".ts-logout").each(function(i, el) {
+				ts.forms.logout(el);
+			});
 		} else {
 			if(register) {
 				ts.forms.register(register);
@@ -585,8 +597,7 @@ var ts = {
 			if(login) {
 				ts.forms.login(login);
 			}
-
-			$(logout).remove();
+			$("form.ts-logout").remove();
 		}
 	}
 };
