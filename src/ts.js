@@ -1,4 +1,4 @@
-// version 0.5.4
+// version 0.5.5
 (function() {
 var getCSRFToken = function(window) {
 	// XXX: should not use RegEx - cf.
@@ -534,15 +534,18 @@ var ts = {
 				var uri = ts.getHost(ts.user.name);
 				var link = $("<a />").attr({"href": uri,
 					"target": "_parent"}).text(ts.user.name)[0];
-				$("<span class='message' />").text("Welcome back ").appendTo(form_or_container);
-				$(form_or_container).append(link);
-				$("<span />").text("!").appendTo(form_or_container);
-				form = $('<form />').appendTo(form_or_container)[0];
-				$('<input type="submit" class="button" value="Log out">').appendTo(form);
+				var msg = $("<span class='message' />").text("Welcome back ").prependTo(form_or_container)[0];
+				$(msg).append(link);
+				$("<span />").text("!").appendTo(msg);
+				form = $("form", form_or_container)[0];
+				if(!form) {
+					form = $('<form />').appendTo(form_or_container)[0];
+					$('<input type="submit" class="button" value="Log out">').appendTo(form);
+				}
 			}  else {
 				form = form_or_container;
 			}
-			$(form_or_container).attr("action", "/logout").attr("method", "post");
+			$(form).attr("action", "/logout").attr("method", "post");
 			ts.forms._csrf(form);
 		},
 		login: function(form) {

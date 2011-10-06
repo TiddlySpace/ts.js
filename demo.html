@@ -17,6 +17,14 @@ Note registration and logout are mutually exclusive.
 <h2>Logout</h2>
 <div class="ts-logout"></div>
 
+<h2>Logout with custom form</h2>
+<div class="ts-logout">
+	<form>
+	<input type="hidden" name="tiddlyweb_redirect" value="http://ts.tiddlyspace.com/Goodbye" />
+	<input type="submit" value="Log Out" />
+	</form>	
+</div>
+
 <h2>Logout without message</h2>
 <form class="ts-logout">
 	<input type="hidden" name="tiddlyweb_redirect" value="http://ts.tiddlyspace.com/Goodbye" />
