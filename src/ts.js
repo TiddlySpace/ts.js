@@ -586,10 +586,6 @@ var ts = {
 		if(!user.anon) {
 			$(document.body).addClass("ts-loggedin");
 			$([register, login]).remove();
-			if(!logout) {
-				return;
-			}
-			$(logout).empty();
 			$(".ts-logout").each(function(i, el) {
 				ts.forms.logout(el);
 			});
