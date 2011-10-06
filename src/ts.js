@@ -600,7 +600,7 @@ var ts = {
 			if(login) {
 				ts.forms.login(login);
 			}
-			$("form.ts-logout").remove();
+			$(".ts-logout").remove();
 		}
 	}
 };
