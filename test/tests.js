@@ -2,13 +2,17 @@ module("public");
 
 var NOP = function() {};
 test("init", function() {
-	ts.init(NOP);
-	strictEqual(ts.currentSpace, false, "no space is defined on a file uri")
+	var res;
+	var test = function(ts) {
+		res = ts.currentSpace;
+	};
+	ts.init(test);
+	strictEqual(res, false, "no space is defined on a file uri")
 });
 
 test("getHost", function() {
 	var host;
-	var callback = function() {
+	var callback = function(ts) {
 		host = ts.getHost(false);
 	};
 	ts.init(callback);
@@ -16,11 +20,19 @@ test("getHost", function() {
 });
 
 test("resolveCurrentSpaceName", function() {
-	ts.init(NOP, { space: "foo" });
-	strictEqual(ts.currentSpace, "foo", "current space reflects the passed in parameter")
+	var res;
+	var test = function(ts) {
+		res = ts.currentSpace;
+	};
+	ts.init(test, { space: "foo" });
+	strictEqual(res, "foo", "current space reflects the passed in parameter")
 });
 
 test("resolveCurrentSpaceName to false", function() {
-	ts.init(NOP, { space: false });
-	strictEqual(ts.currentSpace, false, "false is recognised as a current space");
+	var res;
+	var test = function(ts) {
+		res = ts.currentSpace;
+	};
+	ts.init(test, { space: false });
+	strictEqual(res, false, "false is recognised as a current space");
 });
