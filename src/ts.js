@@ -1,4 +1,4 @@
-// version 0.5.5
+// version 0.5.6
 (function() {
 var getCSRFToken = function(window) {
 	// XXX: should not use RegEx - cf.
@@ -342,7 +342,13 @@ var ts = {
 				var item = $(ev.target).parents("li")[0];
 				var member = $(ev.target).data("member");
 				var callback = function() {
-					$(item).hide(200);
+					$(item).hide(200, function() {
+						$(item).remove();
+						if($("ul.members li:visible").length > 1) {
+							$("button.delete", list).show();
+						}
+					});
+					$("button.delete", list).hide();
 				};
 				var errback = function() {
 					
@@ -357,8 +363,10 @@ var ts = {
 					for(var i = 0; i < members.length; i++) {
 						var item = $("<li />").appendTo(list)[0];
 						$("<a />").text(members[i]).attr("href", ts.getHost(members[i])).appendTo(item);
-						$("<button />").addClass("delete").data("member", members[i]).attr("member", members[i]).text("remove").
-							click(removeMember).appendTo(item);
+						if(members.length > 1) {
+							$("<button />").addClass("delete").data("member", members[i]).attr("member", members[i]).text("remove").
+								click(removeMember).appendTo(item);
+						}
 					}
 				};
 				var errback = function(xhr, error, exc) {
