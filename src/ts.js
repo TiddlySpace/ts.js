@@ -229,7 +229,7 @@ var ts = {
 					// login as that newly created user
 					ts.login(space, password, {
 						success: function() {
-							ts._register_openid_for_user(space, ts.parameters.openid);
+							ts._register_openid_for_user(space, openid);
 						},
 						errback: function() {
 							throw "failed at step 2/3";
