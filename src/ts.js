@@ -93,7 +93,7 @@ var ts = {
 			success: function(status) {
 				options = options || {};
 				options.space = status.space && status.space.name &&
-					typeof(options.space) != "undefined" ? status.space.name : options.space;
+					typeof(options.space) === "undefined" ? status.space.name : options.space;
 				ts.resolveCurrentSpaceName(options, status.server_host.host);
 				if(!ts.currentSpace) {
 					$(document.body).addClass("ts-unknown-space");
@@ -122,7 +122,7 @@ var ts = {
 		});
 	},
 	initForSpace_: function() {
-		new tiddlyweb.Space(ts.currentSpace, ts.getHost(ts.currentSpace)).members().get(function() {
+		new tiddlyweb.Space(ts.currentSpace, "/").members().get(function() {
 			$(document.body).addClass("ts-member");
 			ts.forms.addInclude($("form.ts-includes")[0]);
 			ts.forms.addMember($("form.ts-members")[0]);
@@ -201,7 +201,7 @@ var ts = {
 		}
 	},
 	_register_openid_for_user: function(username, openid) {
-		var user = new tiddlyweb.User(username, null, ts.getHost(ts.currentSpace));
+		var user = new tiddlyweb.User(username, null, "/");
 		user.identities().add(openid, function() {
 			window.location.href = window.location.pathname;
 		}, function() {
@@ -271,7 +271,7 @@ var ts = {
 	},
 	createSpace: function(form, spaceName, callback, errback) {
 		if(ts.isValidSpaceName(spaceName)) {
-			var space = new tiddlyweb.Space(spaceName, ts.getHost(ts.currentSpace));
+			var space = new tiddlyweb.Space(spaceName, "/");
 			space.create(callback, errback);
 		} else {
 			ts.messages.display(form, ts.locale.invalidSpaceError,
