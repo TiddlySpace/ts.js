@@ -93,7 +93,7 @@ var ts = {
 			success: function(status) {
 				options = options || {};
 				options.space = status.space && status.space.name &&
-					typeof(options.space) != "undefined" ? status.space.name : options.space;
+					typeof(options.space) === "undefined" ? status.space.name : options.space;
 				ts.resolveCurrentSpaceName(options, status.server_host.host);
 				if(!ts.currentSpace) {
 					$(document.body).addClass("ts-unknown-space");
