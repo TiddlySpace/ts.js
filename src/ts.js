@@ -1,4 +1,4 @@
-// version 0.5.7
+// version 0.5.8
 (function() {
 var getCSRFToken = function(window) {
 	// XXX: should not use RegEx - cf.
@@ -26,6 +26,7 @@ var ts = {
 	locale: {
 		error: "An error occurred",
 		tryAgain: "Please try again",
+		success: "Clear this notification",
 		badLogin: "Whoops! We can't log you in with those details. Can you provide some others?",
 		charError: "Username is invalid - must only contain lowercase " +
 			"letters, digits or hyphens",
@@ -58,7 +59,8 @@ var ts = {
 				$(options.annotate, form).addClass("annotation");
 			}
 			var container = $("<div />").appendTo(msgArea)[0];
-			$("<a />").text(ts.locale.tryAgain).click(function(ev) {
+			var label = error ? ts.locale.tryAgain : ts.locale.success;
+			$("<a />").text(label).click(function(ev) {
 					var form = $("form", $(ev.target).parents());
 					ts.messages.reset(form);
 				}).appendTo(container);
@@ -247,7 +249,7 @@ var ts = {
 	register: function(username, password, form, options) {
 		options = options || {}
 		var spaceCallback = options.success || function() {
-			ts.messages.display(form, ts.locale.spaceSuccess, true);
+			ts.messages.display(form, ts.locale.spaceSuccess, false);
 			window.location = options.redirect || ts.getHost(username);
 		};
 		var spaceErrback = function(xhr, error, exc) {
