@@ -7,7 +7,7 @@ test("init", function() {
 		res = ts.currentSpace;
 	};
 	ts.init(test);
-	strictEqual(res, false, "no space is defined on a file uri")
+	strictEqual(res, "frontpage", "space at frontpage.tiddlyspace.com is frontpage")
 });
 
 test("getHost", function() {

@@ -91,37 +91,38 @@ var ts = {
 		var openid = $("form.ts-openid")[0];
 
 		$("input[type=submit]", [login, logout, register, openid]).attr("disabled", true);
-		$.ajax({ url: "/status", 
-			success: function(status) {
-				options = options || {};
-				options.space = status.space && status.space.name &&
-					typeof(options.space) === "undefined" ? status.space.name : options.space;
-				ts.resolveCurrentSpaceName(options, status.server_host.host);
-				if(!ts.currentSpace) {
-					$(document.body).addClass("ts-unknown-space");
-				}
-				$(register).removeClass("tsInitializing");
-				$(login).removeClass("tsInitializing");
-				$(logout).removeClass("tsInitializing");
-				$("input[type=submit]", [login, logout, register, openid]).attr("disabled", false);
-				ts.loadStatus(status);
-				if(status.identity || ts.parameters.openid) {
-					ts.register_openid(status.identity);
-				} else if(status.username && ts.parameters.openid) {
-					// open id login occurred so redirect to homespace
-					window.location.href = ts.parameters.redirect ? ts.parameters.redirect : ts.getHost(status.username);
-				}
-				// do login status
-				ts.forms.password($("form.ts-password")[0]);
-				ts.loginStatus(login, register, logout);
-				if(ts.currentSpace) {
-					ts.initForSpace_();
-				}
-				if(callback) {
-					callback(ts);
-				}
-			}
-		});
+                var status = tiddlyweb.status;
+                if (status) {
+                    options = options || {};
+                    options.space = status.space && status.space.name &&
+                            typeof(options.space) === "undefined" ? status.space.name : options.space;
+                    ts.resolveCurrentSpaceName(options, status.server_host.host);
+                    if(!ts.currentSpace) {
+                            $(document.body).addClass("ts-unknown-space");
+                    }
+                    $(register).removeClass("tsInitializing");
+                    $(login).removeClass("tsInitializing");
+                    $(logout).removeClass("tsInitializing");
+                    $("input[type=submit]", [login, logout, register, openid]).attr("disabled", false);
+                    ts.loadStatus(status);
+                    if(status.identity || ts.parameters.openid) {
+                            ts.register_openid(status.identity);
+                    } else if(status.username && ts.parameters.openid) {
+                            // open id login occurred so redirect to homespace
+                            window.location.href = ts.parameters.redirect ? ts.parameters.redirect : ts.getHost(status.username);
+                    }
+                    // do login status
+                    ts.forms.password($("form.ts-password")[0]);
+                    ts.loginStatus(login, register, logout);
+                    if(ts.currentSpace && (
+                            window.location.pathname == '/_space'
+                            || window.location.pathname == '/_account')) {
+                            ts.initForSpace_();
+                    }
+                    if(callback) {
+                            callback(ts);
+                    }
+                }
 	},
 	initForSpace_: function() {
 		new tiddlyweb.Space(ts.currentSpace, "/").members().get(function() {
