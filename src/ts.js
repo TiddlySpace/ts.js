@@ -33,6 +33,7 @@ var ts = {
 		spaceSuccess: "Successfully created space.",
 		userError: "Username is already taken, please choose another.",
 		passwordError: "Passwords do not match",
+		passwordLengthError:  "Error: password must be at least 6 characters",
 		invalidSpaceError: ["error: invalid space name - must start with a letter, be ",
 			"at least two characters in length and only contain lowercase ",
 			"letters, digits or hyphens"].join("")
@@ -395,8 +396,7 @@ var ts = {
 					ts.messages.display(form, msg, true,
 						{ selector: "[name=new_password], [name=new_password_confirm]" });
 				} else if(newPass.length < 6) {
-					var msg = "Error: password must be at least 6 characters";
-					ts.messages.display(form, msg, true, 
+					ts.messages.display(form, ts.locale.passwordLengthError, true, 
 						{ selector: "[name=new_password],[name=new_password_confirm]" });
 				} else {
 					ts.changePassword(ts.user.name, oldPass, newPass, form);
@@ -498,10 +498,14 @@ var ts = {
 				options.redirect = $("[name=redirect]", form).val();
 				var passwordConfirm = $("[name=password_confirm]", form).val();
 				var validName = ts.isValidSpaceName(username);
-				if(validName && password && password === passwordConfirm) { // TODO: check password length?
+				var validLength = password.length >= 6;
+				if(validName && validLength && password &&
+						password === passwordConfirm) {
 					ts.register(username, password, ev.target, options);
 				} else {
-					var msg = validName ? ts.locale.passwordError : ts.locale.charError;
+					var msg = validName ? ts.locale.passwordError :
+						validLength ? ts.locale.passwordLengthError :
+						ts.locale.charError;
 					options.annotate = validName ? "[type=password]" : "[name=username]";
 					ts.messages.display(form, msg, true, options);
 				}
