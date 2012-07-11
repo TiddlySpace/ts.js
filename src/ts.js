@@ -503,7 +503,7 @@ var ts = {
 						password === passwordConfirm) {
 					ts.register(username, password, ev.target, options);
 				} else {
-					var msg = validName ? (validLength ?
+					var msg = validName ? (!validLength ?
 						ts.locale.passwordLengthError :
 						ts.locale.passwordError) :
 						ts.locale.charError;
