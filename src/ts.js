@@ -503,10 +503,10 @@ var ts = {
 						password === passwordConfirm) {
 					ts.register(username, password, ev.target, options);
 				} else {
-					var msg = validName ? (!validLength ?
-						ts.locale.passwordLengthError :
-						ts.locale.passwordError) :
-						ts.locale.charError;
+					var msg = validName ?
+							(!validLength ?  ts.locale.passwordLengthError :
+									ts.locale.passwordError) :
+							ts.locale.charError;
 					options.annotate = validName ? "[type=password]" : "[name=username]";
 					ts.messages.display(form, msg, true, options);
 				}
