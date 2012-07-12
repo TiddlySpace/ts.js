@@ -349,7 +349,7 @@ var ts = {
 				var callback = function() {
 					$(item).hide(200, function() {
 						$(item).remove();
-						if($("ul.members li:visible").length > 1) {
+						if($("ul.ts-members li:visible").length > 1) {
 							$("button.delete", list).show();
 						}
 					});
