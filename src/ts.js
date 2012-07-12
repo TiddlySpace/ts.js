@@ -115,25 +115,23 @@ var ts = {
                     // do login status
                     ts.forms.password($("form.ts-password")[0]);
                     ts.loginStatus(login, register, logout);
-                    if(ts.currentSpace && (
-                            window.location.pathname == '/_space'
-                            || window.location.pathname == '/_account')) {
-                            ts.initForSpace_();
+                    if(ts.currentSpace) {
+                            ts.initForSpace_(status);
                     }
                     if(callback) {
                             callback(ts);
                     }
                 }
 	},
-	initForSpace_: function() {
-		new tiddlyweb.Space(ts.currentSpace, "/").members().get(function() {
+	initForSpace_: function(status) {
+		if (/_private$/.test(status.space.recipe)) {
 			$(document.body).addClass("ts-member");
 			ts.forms.addInclude($("form.ts-includes")[0]);
 			ts.forms.addMember($("form.ts-members")[0]);
 			ts.forms.addSpace($("form.ts-spaces")[0]);
-		}, function() {
+		} else {
 			$(document.body).addClass("ts-nonmember");
-		});
+		}
 		ts.initLists();
 	},
 	getSpaces: function(callback) {
