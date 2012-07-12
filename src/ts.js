@@ -436,33 +436,34 @@ var ts = {
 				ev.preventDefault();
 				var input = $("input[name=username]", form);
 				var username = input.val();
+				var spaceName = /^@/.test(username) ? username.slice(1) : null;
 				var callback = function(data, status, xhr) {
 					ts.lists.members($("ul.ts-members").empty()[0]);
 					input.val("");
 					ts.messages.reset(form);
 				};
 				var errback = function(xhr, error, exc) {
-					if(xhr.status === 409) { // conflict
-						new tiddlyweb.Space(username, "/").members().get(function(members) {
-							var spaceMembers = new tiddlyweb.Space(ts.currentSpace, "/").members();
-							for(var i = 0; i < members.length; i++) {
-								spaceMembers.add(members[i], callback, errback);
-							}
-						}, function(xhr2) {
-							if(xhr2.status === 403) {
-								ts.messages.display(form, "Unable to add members from a space you are not a member of",
-									true, { selector: "[name=username]" });
-							} else {
-								ts.messages.display(form, "Unknown username entered.", true, { selector: "[name=username]" });
-							}
-						});
+					if(xhr.status === 403) {
+						ts.messages.display(form, "Unable to add members from a space you are not a member of",
+							true, { selector: "[name=username]" });
+					} else if (xhr.status === 409) {
+						ts.messages.display(form, "Unknown username entered.", true, { selector: "[name=username]" });
 					} else {
 						msg = "Unknown error occurred.";
 						ts.messages.display(form, msg, true, { selector: "[name=username]" });
 					}
 				};
-				new tiddlyweb.Space(ts.currentSpace, "/").members().
-					add(username, callback, errback);
+				if (!spaceName) {
+					new tiddlyweb.Space(ts.currentSpace, "/").members().
+						add(username, callback, errback);
+				} else {
+					new tiddlyweb.Space(spaceName, '/').members().get(function(members) {
+						var spaceMembers = new tiddlyweb.Space(ts.currentSpace, '/').members();
+						for (var i = 0; i < members.length; i++) {
+							spaceMembers.add(members[i], callback, errback);
+						}
+					}, errback);
+				}
 			});
 		},
 		addSpace: function(form) {
