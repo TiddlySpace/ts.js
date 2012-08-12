@@ -1,7 +1,7 @@
 /*jslint vars: true, browser: true */
 /*global jQuery, tiddlyweb, confirm, prompt */
 //
-// version 0.5.8
+// version 0.5.9
 (function($, window) {
 	"use strict";
 
