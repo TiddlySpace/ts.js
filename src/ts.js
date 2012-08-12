@@ -33,16 +33,16 @@ jQuery(function($) {
 			error: "An error occurred",
 			tryAgain: "Please try again",
 			success: "Clear this notification",
-			badLogin: "Whoops! We can't log you in with those details. Can you provide some others?",
+			badLogin: "We are unable to log you in with those details.",
 			charError: "Username is invalid - must only contain lowercase " +
 				"letters, digits or hyphens",
 			spaceSuccess: "Successfully created space.",
 			userError: "Username is already taken, please choose another.",
 			passwordError: "Passwords do not match",
 			passwordLengthError: "Error: password must be at least 6 characters",
-			invalidSpaceError: ["error: invalid space name - must start with a letter, be ",
-				"at least two characters in length and only contain lowercase ",
-				"letters, digits or hyphens"].join("")
+			invalidSpaceError: ["error: invalid space name - must start with a ",
+				"letter, be at least two characters in length and only contain ",
+				"lowercase letters, digits or hyphens"].join("")
 		},
 		status: {},
 		user: {},
@@ -82,8 +82,9 @@ jQuery(function($) {
 			if(options && options.space !== "undefined") {
 				ts.currentSpace = options.space;
 			} else if(window.location.protocol !== "file:") {
-				if(host.split(".").length < window.location.hostname.split(".").length) {
-					ts.currentSpace = window.location.hostname.split(".")[0];
+				var hostname = window.location.hostname;
+				if(host.split(".").length < hostname.split(".").length) {
+					ts.currentSpace = hostname.split(".")[0];
 				}
 			}
 		},
@@ -97,7 +98,8 @@ jQuery(function($) {
 			var logout = $(".ts-logout").addClass("tsInitializing")[0];
 			var openid = $("form.ts-openid")[0];
 
-			$("input[type=submit]", [login, logout, register, openid]).attr("disabled", true);
+			$("input[type=submit]", [login, logout, register, openid]).
+				attr("disabled", true);
 			var status = tiddlyweb.status;
 			if (status) {
 				options = options || {};
@@ -110,13 +112,15 @@ jQuery(function($) {
 				$(register).removeClass("tsInitializing");
 				$(login).removeClass("tsInitializing");
 				$(logout).removeClass("tsInitializing");
-				$("input[type=submit]", [login, logout, register, openid]).attr("disabled", false);
+				$("input[type=submit]", [login, logout, register, openid]).
+					attr("disabled", false);
 				ts.loadStatus(status);
 				if(status.identity || ts.parameters.openid) {
 					ts.register_openid(status.identity);
 				} else if(status.username && ts.parameters.openid) {
 					// open id login occurred so redirect to homespace
-					window.location.href = ts.parameters.redirect || ts.getHost(status.username);
+					window.location.href = ts.parameters.redirect ||
+						ts.getHost(status.username);
 				}
 				// do login status
 				ts.forms.password($("form.ts-password")[0]);
@@ -187,7 +191,8 @@ jQuery(function($) {
 				window.location = options.redirect || ts.getHost(username);
 			};
 			var errback = options.errback || function() {};
-			var challenger = options.challenger = options.challenger || "tiddlywebplugins.tiddlyspace.cookie_form";
+			var challenger = options.challenger = options.challenger ||
+				"tiddlywebplugins.tiddlyspace.cookie_form";
 			var uri = "/challenge/" + challenger;
 			$.ajax({
 				url: uri,
@@ -196,7 +201,8 @@ jQuery(function($) {
 					user: username,
 					password: password,
 					csrf_token: window.getCSRFToken(),
-					tiddlyweb_redirect: "/status" // workaround to marginalize automatic subsequent GET
+					// workaround to marginalize automatic subsequent GET
+					tiddlyweb_redirect: "/status"
 				},
 				success: success,
 				error: errback
@@ -226,13 +232,17 @@ jQuery(function($) {
 			var space = ts.parameters.space;
 			var username = ts.parameters.user;
 			if(!space && !username) {
-				var answer = confirm("Would you like to create a space with your openid: " + openid + "?");
+				var answer = confirm(
+					"Would you like to create a space with your openid: " +
+						openid + "?"
+				);
 				if(answer) {
 					space = prompt("What would you like to be your TiddlySpace username?");
 				}
 			}
 			if(space && openid) {
-				var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+				var possible =
+					"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 				var password = "";
 				while(password.length < 16) {
 					password += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -265,7 +275,8 @@ jQuery(function($) {
 				window.location = options.redirect || ts.getHost(username);
 			};
 			var spaceErrback = function(xhr, error, exc) {
-				var msg = xhr.status === 409 ? ts.locale.userError : false; // XXX: 409 unlikely to occur at this point
+				// XXX: 409 unlikely to occur at this point
+				var msg = xhr.status === 409 ? ts.locale.userError : false;
 				ts.messages.display(form, msg, true, options);
 			};
 			var userCallback = function(resource, status, xhr) {
@@ -299,7 +310,8 @@ jQuery(function($) {
 			};
 			var pwErrback = function() {
 				var msg = "Old password is incorrect.";
-				ts.messages.display(form, msg, true, { selector: "[name=password]" });
+				ts.messages.display(form, msg, true, { selector:
+					"[name=password]" });
 			};
 			var user = new tiddlyweb.User(username, password, "/");
 			user.setPassword(npassword, pwCallback, pwErrback);
@@ -342,15 +354,21 @@ jQuery(function($) {
 						$(list).removeClass("ts-loading").empty();
 						for(i = 0; i < inclusions.length; i += 1) {
 							item = $("<li />").appendTo(list)[0];
-							$("<a />").text(inclusions[i]).attr("href", ts.getHost(inclusions[i])).appendTo(item);
-							$("<button />").addClass("delete").data("inclusion", inclusions[i]).attr("inclusion", inclusions[i]).text("remove").
-								click(removeInclusion).appendTo(item);
+							$("<a />").text(inclusions[i]).attr("href",
+									ts.getHost(inclusions[i])).appendTo(item);
+							$("<button />").addClass("delete").
+								data("inclusion", inclusions[i]).
+								attr("inclusion", inclusions[i]).
+								text("remove").click(removeInclusion).
+								appendTo(item);
 						}
 					};
 					var errback = function(xhr, error, exc) {
 						$(list).removeClass("ts-loading").empty();
-						$("<li class='annotation' />").text("Error requesting inclusions:"
-								+ xhr.status + ' ' + xhr.statusText).prependTo(list);
+						$("<li class='annotation' />").
+							text("Error requesting inclusions:"
+									+ xhr.status + ' ' + xhr.statusText).
+							prependTo(list);
 					};
 					space.includes().get(callback, errback);
 				}
@@ -383,16 +401,21 @@ jQuery(function($) {
 						members = members.sort();
 						for(i = 0; i < members.length; i += 1) {
 							item = $("<li />").appendTo(list)[0];
-							$("<a />").text(members[i]).attr("href", ts.getHost(members[i])).appendTo(item);
+							$("<a />").text(members[i]).attr("href",
+									ts.getHost(members[i])).appendTo(item);
 							if(members.length > 1) {
-								$("<button />").addClass("delete").data("member", members[i]).attr("member", members[i]).text("remove").
+								$("<button />").addClass("delete").
+									data("member", members[i]).
+									attr("member", members[i]).text("remove").
 									click(removeMember).appendTo(item);
 							}
 						}
 					};
 					var errback = function(xhr, error, exc) {
 						$(list).removeClass("ts-loading").empty();
-						$("<li class='annotation' />").text("Only members can see other members.").prependTo(list);
+						$("<li class='annotation' />").
+							text("Only members can see other members.").
+							prependTo(list);
 					};
 					space.members().get(callback, errback);
 				}
@@ -408,18 +431,23 @@ jQuery(function($) {
 					if(newPass !== newPass2) {
 						var msg = "Passwords do not match";
 						ts.messages.display(form, msg, true,
-							{ selector: "[name=new_password], [name=new_password_confirm]" });
+							{ selector: "[name=new_password], " +
+								"[name=new_password_confirm]" });
 					} else if(newPass.length < 6) {
-						ts.messages.display(form, ts.locale.passwordLengthError, true,
-							{ selector: "[name=new_password],[name=new_password_confirm]" });
+						ts.messages.display(form,
+							ts.locale.passwordLengthError, true,
+							{ selector: "[name=new_password], " +
+								"[name=new_password_confirm]" });
 					} else {
-						ts.changePassword(ts.user.name, oldPass, newPass, form);
+						ts.changePassword(ts.user.name, oldPass,
+							newPass, form);
 					}
 					return false;
 				});
 			},
 			csrf: function(form) {
-				$('<input type="hidden" name="csrf_token" />').val(window.getCSRFToken()).appendTo(form);
+				$('<input type="hidden" name="csrf_token" />').
+					val(window.getCSRFToken()).appendTo(form);
 			},
 			addInclude: function(form) {
 				if(!form) {
@@ -437,7 +465,8 @@ jQuery(function($) {
 					};
 					var errback = function(xhr, error, exc) {
 						var msg = "Unable to include space with that name.";
-						ts.messages.display(form, msg, true, { selector: "[name=spacename]" });
+						ts.messages.display(form, msg, true,
+							{ selector: "[name=spacename]" });
 					};
 					new tiddlyweb.Space(ts.currentSpace, "/").includes().
 						add(space, callback, errback);
@@ -452,7 +481,8 @@ jQuery(function($) {
 					ev.preventDefault();
 					var input = $("input[name=username]", form);
 					var username = input.val();
-					var spaceName = /^@/.test(username) ? username.slice(1) : null;
+					var spaceName = /^@/.test(username) ? username.slice(1) :
+							null;
 					var callback = function(data, status, xhr) {
 						ts.lists.members($("ul.ts-members").empty()[0]);
 						input.val("");
@@ -460,26 +490,39 @@ jQuery(function($) {
 					};
 					var errback = function(xhr, error, exc) {
 						if(xhr.status === 403) {
-							ts.messages.display(form, "Unable to add members from a space you are not a member of",
+							ts.messages.display(form,
+								"Unable to add members from a space you " +
+								"are not a member of",
 								true, { selector: "[name=username]" });
 						} else if (xhr.status === 409) {
-							ts.messages.display(form, "Unknown username entered.", true, { selector: "[name=username]" });
+							ts.messages.display(form,
+								"Unknown username entered.",
+								true, { selector: "[name=username]" });
 						} else {
 							var msg = "Unknown error occurred.";
-							ts.messages.display(form, msg, true, { selector: "[name=username]" });
+							ts.messages.display(form, msg, true,
+									{ selector: "[name=username]" });
 						}
 					};
 					if (!spaceName) {
 						new tiddlyweb.Space(ts.currentSpace, "/").members().
 							add(username, callback, errback);
 					} else {
-						new tiddlyweb.Space(spaceName, '/').members().get(function(members) {
-							var spaceMembers = new tiddlyweb.Space(ts.currentSpace, '/').members(),
-								i;
-							for (i = 0; i < members.length; i += 1) {
-								spaceMembers.add(members[i], callback, errback);
-							}
-						}, errback);
+						new tiddlyweb.Space(spaceName, '/').members().
+							get(function(members) {
+								var spaceMembers = new tiddlyweb.Space(
+									ts.currentSpace,
+									'/'
+								).members(),
+									i;
+								for (i = 0; i < members.length; i += 1) {
+									spaceMembers.add(
+										members[i],
+										callback,
+										errback
+									);
+								}
+							}, errback);
 					}
 				});
 			},
@@ -493,13 +536,16 @@ jQuery(function($) {
 					ev.preventDefault();
 					var spaceName = $(selector, form).val() || "";
 					var callback = function() {
-						var host = ts.getHost(spaceName);
-						var msg = "Successfully created <a href='" + host + "'>" + host + "</a>.";
-						ts.messages.display(form, msg, false, { selector: selector });
+						var host = ts.getHost(spaceName),
+							msg = "Successfully created <a href='" +
+								host + "'>" + host + "</a>.";
+						ts.messages.display(form, msg, false,
+							{ selector: selector });
 					};
 					var errback = function() {
 						var msg = "Problem creating a space with that name.";
-						ts.messages.display(form, msg, true, { selector: selector });
+						ts.messages.display(form, msg, true,
+							{ selector: selector });
 					};
 					ts.createSpace(form, spaceName, callback, errback);
 				});
@@ -512,7 +558,8 @@ jQuery(function($) {
 					var username = $("[name=username]", form).val();
 					var password = $("[name=password]", form).val();
 					options.redirect = $("[name=redirect]", form).val();
-					var passwordConfirm = $("[name=password_confirm]", form).val();
+					var passwordConfirm = $("[name=password_confirm]",
+						form).val();
 					var validName = ts.isValidSpaceName(username);
 					var validLength = password.length >= 6;
 					if(validName && validLength && password &&
@@ -523,7 +570,8 @@ jQuery(function($) {
 								(!validLength ? ts.locale.passwordLengthError :
 										ts.locale.passwordError) :
 								ts.locale.charError;
-						options.annotate = validName ? "[type=password]" : "[name=username]";
+						options.annotate = validName ? "[type=password]" :
+								"[name=username]";
 						ts.messages.display(form, msg, true, options);
 					}
 					return false;
@@ -532,14 +580,17 @@ jQuery(function($) {
 			openid: function(form, options) {
 				ts.forms.csrf(form);
 				$(form).attr("method", "post").
-					attr("action", "/challenge/tiddlywebplugins.tiddlyspace.openid").
+					attr("action",
+							"/challenge/tiddlywebplugins.tiddlyspace.openid").
 					submit(function(ev) {
-						var identity = $("input[name=openid]", form).val();
-						var space = $("input[name=space]", form).val();
-						var user = options && options.user ? options.user.name : null;
+						var identity = $("input[name=openid]", form).val(),
+						    space = $("input[name=space]", form).val(),
+							user = options && options.user ?
+									options.user.name : null;
 						if(!identity) {
 							ev.preventDefault();
-							return ts.messages.display(form, "Please provide an openid!");
+							return ts.messages.display(form,
+								"Please provide an openid!");
 						}
 						var querystring = "?openid=" + identity;
 						if(space) {
@@ -555,7 +606,8 @@ jQuery(function($) {
 						// IMPORTANT: #auth:OpenID=<openid> is read by the openid tiddlyweb plugin
 						// when present it keeps you logged in as your cookie username
 						$('<input name="tiddlyweb_redirect" type="hidden" />').
-							val(window.location.pathname + querystring + "#auth:OpenID=" + identity).appendTo(form);
+							val(window.location.pathname + querystring +
+									"#auth:OpenID=" + identity).appendTo(form);
 					});
 			},
 			logout: function(form_or_container) {
@@ -569,13 +621,15 @@ jQuery(function($) {
 					var uri = ts.getHost(ts.user.name);
 					var link = $("<a />").attr({"href": uri,
 						"target": "_parent"}).text(ts.user.name)[0];
-					var msg = $("<span class='message' />").text("Welcome back ").prependTo(form_or_container)[0];
+					var msg = $("<span class='message' />").
+						text("Welcome back ").prependTo(form_or_container)[0];
 					$(msg).append(link);
 					$("<span />").text("!").appendTo(msg);
 					form = $("form", form_or_container)[0];
 					if(!form) {
 						form = $('<form />').appendTo(form_or_container)[0];
-						$('<input type="submit" class="button" value="Log out">').appendTo(form);
+						$('<input type="submit" class="button" value="Log out">').
+							appendTo(form);
 					}
 				} else {
 					form = form_or_container;
@@ -600,10 +654,12 @@ jQuery(function($) {
 					var user = $("input[name=username]", form).val();
 					var pass = $("input[name=password]", form).val();
 					if(!user) {
-						return ts.messages.display(form, "Please provide a username!");
+						return ts.messages.display(form,
+							"Please provide a username!");
 					}
 					if(!pass) {
-						return ts.messages.display(form, "Please provide a password!");
+						return ts.messages.display(form,
+							"Please provide a password!");
 					}
 					options.redirect = $("input[name=redirect]", form).val();
 					ts.login(user,
@@ -639,4 +695,3 @@ jQuery(function($) {
 	};
 
 });
-
