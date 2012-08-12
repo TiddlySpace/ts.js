@@ -2,7 +2,7 @@
 /*global jQuery, tiddlyweb, confirm, prompt */
 //
 // version 0.5.8
-jQuery(function($) {
+(function($, window) {
 	"use strict";
 
 	var getCSRFToken = function() {
@@ -693,6 +693,6 @@ jQuery(function($) {
 	};
 	window.ts = {
 		init: ts.init
-	};
+        };
 
-});
+})(jQuery, window);
