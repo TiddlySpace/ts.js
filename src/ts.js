@@ -335,7 +335,8 @@ var ts = {
 				};
 				var errback = function(xhr, error, exc) {
 					$(list).removeClass("ts-loading").empty();
-					$("<li class='annotation' />").text("Only members can see other inclusions.").prependTo(list);
+					$("<li class='annotation' />").text("Error requesting inclusions:"
+							+ xhr.status + ' ' + xhr.statusText).prependTo(list);
 				};
 				space.includes().get(callback, errback);
 			}
