@@ -693,6 +693,6 @@
 	};
 	window.ts = {
 		init: ts.init
-        };
+	};
 
-})(jQuery, window);
+}(jQuery, window));
