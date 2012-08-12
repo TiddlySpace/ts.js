@@ -79,7 +79,7 @@ jQuery(function($) {
 			}
 		},
 		resolveCurrentSpaceName: function(options, host) {
-			if(options && options.space !== "undefined") {
+			if(options && typeof options.space !== "undefined") {
 				ts.currentSpace = options.space;
 			} else if(window.location.protocol !== "file:") {
 				var hostname = window.location.hostname;
@@ -103,8 +103,9 @@ jQuery(function($) {
 			var status = tiddlyweb.status;
 			if (status) {
 				options = options || {};
-				options.space = status.space && status.space.name &&
-					options.space === "undefined" ? status.space.name : options.space;
+				if (status.space && status.space.name && typeof options.space === "undefined") {
+					options.space = status.space.name;
+				}
 				ts.resolveCurrentSpaceName(options, status.server_host.host);
 				if(!ts.currentSpace) {
 					$(document.body).addClass("ts-unknown-space");
