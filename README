@@ -1,0 +1,5 @@
+ts.js is an amalgamation of TiddlySpace used to drive admin
+interfaces used by TiddySpace users to do things like load
+SiteIcons, change passwords, register, do inclusions, etc.
+
+It's in the process of being cleaned up.
