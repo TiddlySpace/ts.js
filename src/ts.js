@@ -49,6 +49,44 @@
 		}, errback);
 	}
 
+	/*
+	 * Reset the message area associated with the provided form.
+	 */
+	function resetMessage(form) {
+		$(".annotation", form).removeClass("annotation");
+		$(".messageArea", form).empty().removeClass("error").hide();
+		$(".inputArea", form).show();
+	}
+
+	/*
+	 * Display a message aligned with the provided form.
+	 */
+	function displayMessage(form, msg, error, options) {
+		options = options || {};
+		if(options.hideForm) {
+			$(".inputArea", form).hide();
+		} else {
+			$(".inputArea", form).show();
+		}
+		var msgArea = $(".messageArea", form);
+		if(msgArea.length === 0) {
+			msgArea = $('<div class="messageArea" />').prependTo(form);
+		}
+		msgArea.html(msg || ts.locale.error).show(100);
+		if(error) {
+			msgArea.addClass("error annotation");
+		}
+		if(options.annotate) {
+			$(options.annotate, form).addClass("annotation");
+		}
+		var container = $("<div />").appendTo(msgArea)[0];
+		var label = error ? ts.locale.tryAgain : ts.locale.success;
+		$("<a />").text(label).click(function(ev) {
+			var form = $("form", $(ev.target).parents());
+			resetMessage(form);
+		}).appendTo(container);
+	}
+
 	var ts = {
 		currentSpace: false,
 		locale: {
@@ -68,38 +106,6 @@
 		},
 		status: {},
 		user: {},
-		messages: {
-			display: function(form, msg, error, options) {
-				options = options || {};
-				if(options.hideForm) {
-					$(".inputArea", form).hide();
-				} else {
-					$(".inputArea", form).show();
-				}
-				var msgArea = $(".messageArea", form);
-				if(msgArea.length === 0) {
-					msgArea = $('<div class="messageArea" />').prependTo(form);
-				}
-				msgArea.html(msg || ts.locale.error).show(100);
-				if(error) {
-					msgArea.addClass("error annotation");
-				}
-				if(options.annotate) {
-					$(options.annotate, form).addClass("annotation");
-				}
-				var container = $("<div />").appendTo(msgArea)[0];
-				var label = error ? ts.locale.tryAgain : ts.locale.success;
-				$("<a />").text(label).click(function(ev) {
-					var form = $("form", $(ev.target).parents());
-					ts.messages.reset(form);
-				}).appendTo(container);
-			},
-			reset: function(form) {
-				$(".annotation", form).removeClass("annotation");
-				$(".messageArea", form).empty().removeClass("error").hide();
-				$(".inputArea", form).show();
-			}
-		},
 		resolveCurrentSpaceName: function(options, host) {
 			if(options && typeof options.space !== "undefined") {
 				ts.currentSpace = options.space;
@@ -294,13 +300,13 @@
 		register: function(username, password, form, options) {
 			options = options || {};
 			var spaceCallback = options.success || function() {
-				ts.messages.display(form, ts.locale.spaceSuccess, false);
+				displayMessage(form, ts.locale.spaceSuccess, false);
 				window.location = options.redirect || ts.getHost(username);
 			};
 			var spaceErrback = function(xhr, error, exc) {
 				// XXX: 409 unlikely to occur at this point
 				var msg = xhr.status === 409 ? ts.locale.userError : false;
-				ts.messages.display(form, msg, true, options);
+				displayMessage(form, msg, true, options);
 			};
 			var userCallback = function(resource, status, xhr) {
 				ts.login(username, password, {
@@ -312,7 +318,7 @@
 			};
 			var userErrback = function(xhr, error, exc) {
 				var msg = xhr.status === 409 ? ts.locale.userError : false;
-				ts.messages.display(form, msg, true, options);
+				displayMessage(form, msg, true, options);
 			};
 			var user = new tiddlyweb.User(username, password, "/");
 			user.create(userCallback, userErrback);
@@ -322,18 +328,18 @@
 				var space = new tiddlyweb.Space(spaceName, "/");
 				space.create(callback, errback);
 			} else {
-				ts.messages.display(form, ts.locale.invalidSpaceError,
+				displayMessage(form, ts.locale.invalidSpaceError,
 					true, { selector: "[name=space]" });
 			}
 		},
 		changePassword: function(username, password, npassword, form) {
 			var pwCallback = function() {
 				var msg = "Successfully changed your password.";
-				ts.messages.display(form, msg);
+				displayMessage(form, msg);
 			};
 			var pwErrback = function() {
 				var msg = "Old password is incorrect.";
-				ts.messages.display(form, msg, true, { selector:
+				displayMessage(form, msg, true, { selector:
 					"[name=password]" });
 			};
 			var user = new tiddlyweb.User(username, password, "/");
@@ -475,11 +481,11 @@
 				var newPass2 = $("[name=new_password_confirm]").val();
 				if(newPass !== newPass2) {
 					var msg = "Passwords do not match";
-					ts.messages.display(form, msg, true,
+					displayMessage(form, msg, true,
 						{ selector: "[name=new_password], " +
 							"[name=new_password_confirm]" });
 				} else if(newPass.length < 6) {
-					ts.messages.display(form,
+					displayMessage(form,
 						ts.locale.passwordLengthError, true,
 						{ selector: "[name=new_password], " +
 							"[name=new_password_confirm]" });
@@ -506,11 +512,11 @@
 				var callback = function(data, status, xhr) {
 					ts.lists.includes($("ul.ts-includes").empty()[0]);
 					input.val("");
-					ts.messages.reset(form);
+					resetMessage(form);
 				};
 				var errback = function(xhr, error, exc) {
 					var msg = "Unable to include space with that name.";
-					ts.messages.display(form, msg, true,
+					displayMessage(form, msg, true,
 						{ selector: "[name=spacename]" });
 				};
 				new tiddlyweb.Space(ts.currentSpace, "/").includes().
@@ -531,21 +537,21 @@
 				var callback = function(data, status, xhr) {
 					ts.lists.members($("ul.ts-members").empty()[0]);
 					input.val("");
-					ts.messages.reset(form);
+					resetMessage(form);
 				};
 				var errback = function(xhr, error, exc) {
 					if(xhr.status === 403) {
-						ts.messages.display(form,
+						displayMessage(form,
 							"Unable to add members from a space you " +
 							"are not a member of",
 							true, { selector: "[name=username]" });
 					} else if (xhr.status === 409) {
-						ts.messages.display(form,
+						displayMessage(form,
 							"Unknown username entered.",
 							true, { selector: "[name=username]" });
 					} else {
 						var msg = "Unknown error occurred.";
-						ts.messages.display(form, msg, true,
+						displayMessage(form, msg, true,
 								{ selector: "[name=username]" });
 					}
 				};
@@ -570,12 +576,12 @@
 					var host = ts.getHost(spaceName),
 						msg = "Successfully created <a href='" +
 							host + "'>" + host + "</a>.";
-					ts.messages.display(form, msg, false,
+					displayMessage(form, msg, false,
 						{ selector: selector });
 				};
 				var errback = function() {
 					var msg = "Problem creating a space with that name.";
-					ts.messages.display(form, msg, true,
+					displayMessage(form, msg, true,
 						{ selector: selector });
 				};
 				ts.createSpace(form, spaceName, callback, errback);
@@ -603,7 +609,7 @@
 							ts.locale.charError;
 					options.annotate = validName ? "[type=password]" :
 							"[name=username]";
-					ts.messages.display(form, msg, true, options);
+					displayMessage(form, msg, true, options);
 				}
 				return false;
 			});
@@ -620,7 +626,7 @@
 								options.user.name : null;
 					if(!identity) {
 						ev.preventDefault();
-						return ts.messages.display(form,
+						return displayMessage(form,
 							"Please provide an openid!");
 					}
 					var querystring = "?openid=" + identity;
@@ -675,9 +681,9 @@
 				errback: function(xhr, error, exc) {
 					var code = xhr.status;
 					if(code === 401) {
-						ts.messages.display(form, ts.locale.badlogin, true);
+						displayMessage(form, ts.locale.badlogin, true);
 					} else {
-						ts.messages.display(form, ts.locale.tryAgain, true);
+						displayMessage(form, ts.locale.tryAgain, true);
 					}
 				}
 			};
@@ -685,11 +691,11 @@
 				var user = $("input[name=username]", form).val();
 				var pass = $("input[name=password]", form).val();
 				if(!user) {
-					return ts.messages.display(form,
+					return displayMessage(form,
 						"Please provide a username!");
 				}
 				if(!pass) {
-					return ts.messages.display(form,
+					return displayMessage(form,
 						"Please provide a password!");
 				}
 				options.redirect = $("input[name=redirect]", form).val();
