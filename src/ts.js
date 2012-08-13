@@ -27,6 +27,28 @@
 
 	window.getCSRFToken = getCSRFToken;
 
+	/*
+	 * Add the members of spaceName to the current space.
+	 */
+	function addMembersfromSpace(ts, spaceName, callback, errback) {
+		new tiddlyweb.Space(spaceName, '/').members().get(function(members) {
+			var spaceMembers = new tiddlyweb.Space(ts.currentSpace, '/').
+				members(),
+				putMembers = function(members, callback, errback) {
+					var currentMember = members.shift();
+					if (currentMember) {
+						var next = function() {
+							putMembers(members, callback, errback);
+						};
+						spaceMembers.add(currentMember, next, errback);
+					} else {
+						callback();
+					}
+				};
+			putMembers(members, callback, errback);
+		}, errback);
+	}
+
 	var ts = {
 		currentSpace: false,
 		locale: {
@@ -509,21 +531,7 @@
 						new tiddlyweb.Space(ts.currentSpace, "/").members().
 							add(username, callback, errback);
 					} else {
-						new tiddlyweb.Space(spaceName, '/').members().
-							get(function(members) {
-								var spaceMembers = new tiddlyweb.Space(
-									ts.currentSpace,
-									'/'
-								).members(),
-									i;
-								for (i = 0; i < members.length; i += 1) {
-									spaceMembers.add(
-										members[i],
-										callback,
-										errback
-									);
-								}
-							}, errback);
+						addMembersfromSpace(ts, spaceName, callback, errback);
 					}
 				});
 			},
