@@ -81,8 +81,7 @@
 		}
 		var container = $("<div />").appendTo(msgArea)[0];
 		var label = error ? ts.locale.tryAgain : ts.locale.success;
-		$("<a />").text(label).click(function(ev) {
-			var form = $("form", $(ev.target).parents());
+		$("<a />").text(label).click(function() {
 			resetMessage(form);
 		}).appendTo(container);
 	}
