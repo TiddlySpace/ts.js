@@ -328,8 +328,7 @@
 				var space = new tiddlyweb.Space(spaceName, "/");
 				space.create(callback, errback);
 			} else {
-				displayMessage(form, ts.locale.invalidSpaceError,
-					true, { selector: "[name=space]" });
+				displayMessage(form, ts.locale.invalidSpaceError, true);
 			}
 		},
 		changePassword: function(username, password, npassword, form) {
@@ -339,8 +338,7 @@
 			};
 			var pwErrback = function() {
 				var msg = "Old password is incorrect.";
-				displayMessage(form, msg, true, { selector:
-					"[name=password]" });
+				displayMessage(form, msg, true);
 			};
 			var user = new tiddlyweb.User(username, password, "/");
 			user.setPassword(npassword, pwCallback, pwErrback);
@@ -376,17 +374,11 @@
 				var newPass2 = $("[name=new_password_confirm]").val();
 				if(newPass !== newPass2) {
 					var msg = "Passwords do not match";
-					displayMessage(form, msg, true,
-						{ selector: "[name=new_password], " +
-							"[name=new_password_confirm]" });
+					displayMessage(form, msg, true);
 				} else if(newPass.length < 6) {
-					displayMessage(form,
-						ts.locale.passwordLengthError, true,
-						{ selector: "[name=new_password], " +
-							"[name=new_password_confirm]" });
+					displayMessage(form, ts.locale.passwordLengthError, true);
 				} else {
-					ts.changePassword(ts.user.name, oldPass,
-						newPass, form);
+					ts.changePassword(ts.user.name, oldPass, newPass, form);
 				}
 				return false;
 			});
@@ -411,8 +403,7 @@
 				};
 				var errback = function(xhr, error, exc) {
 					var msg = "Unable to include space with that name.";
-					displayMessage(form, msg, true,
-						{ selector: "[name=spacename]" });
+					displayMessage(form, msg, true);
 				};
 				new tiddlyweb.Space(ts.currentSpace, "/").includes().
 					add(space, callback, errback);
@@ -439,15 +430,14 @@
 						displayMessage(form,
 							"Unable to add members from a space you " +
 							"are not a member of",
-							true, { selector: "[name=username]" });
+							true);
 					} else if (xhr.status === 409) {
 						displayMessage(form,
 							"Unknown username entered.",
-							true, { selector: "[name=username]" });
+							true);
 					} else {
 						var msg = "Unknown error occurred.";
-						displayMessage(form, msg, true,
-								{ selector: "[name=username]" });
+						displayMessage(form, msg, true);
 					}
 				};
 				if (!spaceName) {
@@ -471,13 +461,11 @@
 					var host = ts.getHost(spaceName),
 						msg = "Successfully created <a href='" +
 							host + "'>" + host + "</a>.";
-					displayMessage(form, msg, false,
-						{ selector: selector });
+					displayMessage(form, msg, false);
 				};
 				var errback = function() {
 					var msg = "Problem creating a space with that name.";
-					displayMessage(form, msg, true,
-						{ selector: selector });
+					displayMessage(form, msg, true);
 				};
 				ts.createSpace(form, spaceName, callback, errback);
 			});
@@ -586,16 +574,13 @@
 				var user = $("input[name=username]", form).val();
 				var pass = $("input[name=password]", form).val();
 				if(!user) {
-					return displayMessage(form,
-						"Please provide a username!");
+					return displayMessage(form, "Please provide a username!");
 				}
 				if(!pass) {
-					return displayMessage(form,
-						"Please provide a password!");
+					return displayMessage(form, "Please provide a password!");
 				}
 				options.redirect = $("input[name=redirect]", form).val();
-				ts.login(user,
-					pass, options);
+				ts.login(user, pass, options);
 				ev.preventDefault();
 			});
 		}
