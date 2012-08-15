@@ -118,6 +118,23 @@
 		}
 	}
 
+	/*
+	 * Parse query parameters into a simple object.
+	 */
+	function parseParameters(queryString) {
+		var args = queryString.split(/[&;]/),
+			parameters = {},
+			i,
+			nameval;
+		for(i = 0; i < args.length; i += 1) {
+			nameval = args[i].split("=");
+			if(nameval.length === 2) {
+				parameters[nameval[0]] = nameval[1];
+			}
+		}
+		return parameters;
+	}
+
 	var ts = {
 		currentSpace: false,
 		locale: {
@@ -151,7 +168,7 @@
 			return name.match(/^[a-z][0-9a-z\-]*[0-9a-z]$/) ? true : false;
 		},
 		init: function(callback, options) {
-			ts.loadHash();
+			ts.parameters = parseParameters(window.location.search.substr(1));
 			var status = tiddlyweb.status;
 			if (status) {
 				defaultInit(ts, status, callback, options);
@@ -233,17 +250,6 @@
 			});
 		},
 		parameters: {},
-		loadHash: function() {
-			var args = window.location.search.substr(1).split("&"),
-				i,
-				nameval;
-			for(i = 0; i < args.length; i += 1) {
-				nameval = args[i].split("=");
-				if(nameval.length === 2) {
-					ts.parameters[nameval[0]] = nameval[1];
-				}
-			}
-		},
 		register_openid_for_user: function(username, openid) {
 			var user = new tiddlyweb.User(username, null, "/");
 			user.identities().add(openid, function() {
@@ -689,6 +695,7 @@
 			}
 		}
 	};
+	ts.parseParameters = parseParameters;
 	window.ts = {
 		init: ts.init
 	};

@@ -36,3 +36,16 @@ test("resolveCurrentSpaceName to false", function() {
 	ts.init(test, { space: false });
 	strictEqual(res, false, "false is recognised as a current space");
 });
+
+test("parseParameters parses", function() {
+	var queryString = 'foo=5&bar=10',
+		res;
+	var test = function(ts) {
+		res = ts.parseParameters(queryString);
+	};
+
+	ts.init(test);
+
+	strictEqual(res.foo, '5', 'foo is 5')
+	strictEqual(res.bar, '10', 'bar is 10')
+});
