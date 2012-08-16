@@ -239,6 +239,7 @@
 			var success = options.success || function() {
 				window.location = options.redirect || ts.getHost(username);
 			};
+			// XXX void errback?
 			var errback = options.errback || function() {};
 			var challenger = options.challenger = options.challenger ||
 				"tiddlywebplugins.tiddlyspace.cookie_form";
