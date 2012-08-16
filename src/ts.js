@@ -2,7 +2,7 @@
 /*global jQuery, tiddlyweb, confirm, prompt */
 //
 // version 0.5.12
-(function($, window) {
+(function($) {
 	"use strict";
 
 	var getCSRFToken = function() {
@@ -409,7 +409,8 @@
 				var callback = function(data, status, xhr) {
 					ts.lists.includes($("ul.ts-includes").empty()[0]);
 					input.val("");
-					resetMessage(form);
+					var msg = space + ' included';
+					displayMessage(form, msg, false);
 				};
 				var errback = function(xhr, error, exc) {
 					var msg = "Unable to include space with that name.";
@@ -705,4 +706,4 @@
 		init: ts.init
 	};
 
-}(jQuery, window));
+}(jQuery));
