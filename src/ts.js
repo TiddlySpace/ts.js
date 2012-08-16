@@ -135,6 +135,14 @@
 		return parameters;
 	}
 
+	/*
+	 * add CSRF form fields to the provided form.
+	 */
+	function addCSRF(form) {
+		$('<input type="hidden" name="csrf_token" />').
+			val(getCSRFToken()).appendTo(form);
+	}
+
 	var ts = {
 		currentSpace: false,
 		locale: {
@@ -241,7 +249,7 @@
 				data: {
 					user: username,
 					password: password,
-					csrf_token: window.getCSRFToken(),
+					csrf_token: getCSRFToken(),
 					// workaround to marginalize automatic subsequent GET
 					tiddlyweb_redirect: "/status"
 				},
@@ -388,15 +396,11 @@
 				return false;
 			});
 		},
-		csrf: function(form) {
-			$('<input type="hidden" name="csrf_token" />').
-				val(window.getCSRFToken()).appendTo(form);
-		},
 		addInclude: function(form) {
 			if(!form) {
 				return;
 			}
-			ts.forms.csrf(form);
+			addCSRF(form);
 			$(form).submit(function(ev) {
 				ev.preventDefault();
 				var input = $("input[name=spacename]", form);
@@ -418,7 +422,7 @@
 			if(!form) {
 				return;
 			}
-			ts.forms.csrf(form);
+			addCSRF(form);
 			$(form).submit(function(ev) {
 				ev.preventDefault();
 				var input = $("input[name=username]", form);
@@ -458,7 +462,7 @@
 				return;
 			}
 			var selector = "[name=spacename]";
-			ts.forms.csrf(form);
+			addCSRF(form);
 			$(form).submit(function(ev) {
 				ev.preventDefault();
 				var spaceName = $(selector, form).val() || "";
@@ -477,7 +481,7 @@
 		},
 		register: function(form, options) {
 			options = options || {};
-			ts.forms.csrf(form);
+			addCSRF(form);
 			$(form).submit(function(ev) {
 				ev.preventDefault();
 				var username = $("[name=username]", form).val();
@@ -503,7 +507,7 @@
 			});
 		},
 		openid: function(form, options) {
-			ts.forms.csrf(form);
+			addCSRF(form);
 			$(form).attr("method", "post").
 				attr("action",
 						"/challenge/tiddlywebplugins.tiddlyspace.openid").
@@ -560,11 +564,11 @@
 				form = form_or_container;
 			}
 			$(form).attr("action", "/logout").attr("method", "post");
-			ts.forms.csrf(form);
+			addCSRF(form);
 		},
 		login: function(form) {
 			// do login
-			ts.forms.csrf(form);
+			addCSRF(form);
 			var options = {
 				errback: function(xhr, error, exc) {
 					var code = xhr.status;
