@@ -72,18 +72,28 @@
 		if(msgArea.length === 0) {
 			msgArea = $('<div class="messageArea" />').prependTo(form);
 		}
-		msgArea.html(msg || ts.locale.error).show(100);
+		msgArea
+			.append( 
+				$('<button></button')
+					.html("&times;")
+					.addClass("close-btn")
+					.attr("title", "close notification")
+					.data("parent-class", "messageArea")
+					.click( function() { resetMessage(form) } )
+			)
+			.append( $('<p></p>').html(msg || ts.locale.error) )
+			.show(100);
 		if(error) {
 			msgArea.addClass("error annotation");
+			var container = $("<div />").appendTo(msgArea)[0];
+			$("<a />").text("Try again?").click(function() {
+				resetMessage(form);
+				$('input', form)[0].focus();
+			}).appendTo(container);
 		}
 		if(options.annotate) {
 			$(options.annotate, form).addClass("annotation");
 		}
-		var container = $("<div />").appendTo(msgArea)[0];
-		var label = error ? ts.locale.tryAgain : ts.locale.success;
-		$("<a />").text(label).click(function() {
-			resetMessage(form);
-		}).appendTo(container);
 	}
 
 	/*
