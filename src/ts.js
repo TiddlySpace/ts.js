@@ -644,12 +644,14 @@
 					$(list).removeClass("ts-loading").empty();
 					for(i = 0; i < inclusions.length; i += 1) {
 						item = $("<li />").appendTo(list)[0];
-						$("<a />").text(inclusions[i]).attr("href",
-								ts.getHost(inclusions[i])).appendTo(item);
+						$("<a />")
+							.text(inclusions[i])
+							.attr("href", ts.getHost(inclusions[i]))
+							.appendTo(item);
 						$("<button />").addClass("delete").
 							data("inclusion", inclusions[i]).
 							attr("inclusion", inclusions[i]).
-							text("remove").click(removeInclusion).
+							html("&times;").click(removeInclusion).
 							appendTo(item);
 					}
 				};
@@ -696,7 +698,7 @@
 						if(members.length > 1) {
 							$("<button />").addClass("delete").
 								data("member", members[i]).
-								attr("member", members[i]).text("remove").
+								attr("member", members[i]).html("&times;").
 								click(removeMember).appendTo(item);
 						}
 					}
