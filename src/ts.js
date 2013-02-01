@@ -647,9 +647,11 @@
 						$("<a />")
 							.text(inclusions[i])
 							.attr("href", ts.getHost(inclusions[i]))
+							.attr("title", "visit icluded space")
 							.appendTo(item);
 						$("<button />").addClass("delete").
 							data("inclusion", inclusions[i]).
+							attr("title", "remove inclusion").
 							html("&times;").click(removeInclusion).
 							appendTo(item);
 					}
@@ -692,11 +694,15 @@
 					members = members.sort();
 					for(i = 0; i < members.length; i += 1) {
 						item = $("<li />").appendTo(list)[0];
-						$("<a />").text(members[i]).attr("href",
-								ts.getHost(members[i])).appendTo(item);
+						$("<a />")
+							.text(members[i])
+							.attr("href", ts.getHost(members[i]))
+							.attr("title", "visit member's home space")
+							.appendTo(item);
 						if(members.length > 1) {
 							$("<button />").addClass("delete").
 								data("member", members[i]).
+								attr("title", "remove member").
 								html("&times;").
 								click(removeMember).appendTo(item);
 						}
