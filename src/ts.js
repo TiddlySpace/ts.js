@@ -650,7 +650,6 @@
 							.appendTo(item);
 						$("<button />").addClass("delete").
 							data("inclusion", inclusions[i]).
-							attr("inclusion", inclusions[i]).
 							html("&times;").click(removeInclusion).
 							appendTo(item);
 					}
@@ -698,7 +697,7 @@
 						if(members.length > 1) {
 							$("<button />").addClass("delete").
 								data("member", members[i]).
-								attr("member", members[i]).html("&times;").
+								html("&times;").
 								click(removeMember).appendTo(item);
 						}
 					}
