@@ -591,19 +591,29 @@
 					}
 				}
 			};
-			$(form).submit(function(ev) {
-				var user = $("input[name=username]", form).val();
-				var pass = $("input[name=password]", form).val();
-				if(!user) {
-					return displayMessage(form, "Please provide a username!");
-				}
-				if(!pass) {
-					return displayMessage(form, "Please provide a password!");
-				}
-				options.redirect = $("input[name=redirect]", form).val();
-				ts.login(user, pass, options);
-				ev.preventDefault();
-			});
+            function doLogin(ev) {
+                var user = $("input[name=username]", form).val();
+                var pass = $("input[name=password]", form).val();
+                if(!user) {
+                    return displayMessage(form, "Please provide a username!");
+                }
+                if(!pass) {
+                    return displayMessage(form, "Please provide a password!");
+                }
+                options.redirect = $("input[name=redirect]", form).val();
+                ts.login(user, pass, options);
+                ev.preventDefault();
+            }
+
+            $(form).submit(function(ev) {
+                doLogin(ev);
+            });
+
+            $(form).keypress(function(ev) {
+                if(ev.keyCode === 13) {
+                    doLogin(ev);
+                }
+            });
 		}
 	};
 	ts.lists = {
