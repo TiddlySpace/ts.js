@@ -62,7 +62,7 @@ module.exports = function (grunt) {
             "lib/chrjs-space.js": "https://raw.github.com/TiddlySpace/tiddlyspace/master/src/lib/chrjs.space.js",
             "lib/chrjs-users.js": "https://raw.github.com/tiddlyweb/chrjs/master/users.js",
             "lib/chrjs.js": "https://raw.github.com/tiddlyweb/chrjs/master/main.js",
-            "lib/jquery.min.js": "http://code.jquery.com/jquery-1.6.1.min.js",
+            "lib/jquery.min.js": "http://tiddlyspace.com/bags/common/tiddlers/jquery.js",
             "lib/jquery-json.min.js": "http://jquery-json.googlecode.com/files/jquery.json-2.2.min.js"
         }
     });
