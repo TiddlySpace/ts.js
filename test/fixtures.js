@@ -1,3 +1,0 @@
-var xhr = {
-	getResponseHeader: function() {}
-};

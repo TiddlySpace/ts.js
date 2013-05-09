@@ -31,8 +31,8 @@
 	 * Add the members of spaceName to the current space.
 	 */
 	function addMembersfromSpace(ts, spaceName, callback, errback) {
-		new tiddlyweb.Space(spaceName, '/').members().get(function(members) {
-			var spaceMembers = new tiddlyweb.Space(ts.currentSpace, '/').
+		new tiddlyweb.Space(spaceName, "/").members().get(function(members) {
+			var spaceMembers = new tiddlyweb.Space(ts.currentSpace, "/").
 				members(),
 				putMembers = function(members, callback, errback) {
 					var currentMember = members.shift();
@@ -70,25 +70,22 @@
 		}
 		var msgArea = $(".messageArea", form);
 		if(msgArea.length === 0) {
-			msgArea = $('<div class="messageArea" />').prependTo(form);
+			msgArea = $("<div class='messageArea' />").prependTo(form);
 		}
 		msgArea
-			.append( 
-				$('<button></button')
+			.append($("<button></button>")
 					.html("&times;")
 					.addClass("close-btn")
 					.attr("title", "close notification")
 					.data("parent-class", "messageArea")
-					.click( function() { resetMessage(form) } )
-			)
-			.append( $('<p></p>').html(msg || ts.locale.error) )
-			.show(100);
+					.click( function() { resetMessage(form); } )
+			).append( $("<p></p>").html(msg || ts.locale.error) ).show(100);
 		if(error) {
 			msgArea.addClass("error annotation");
 			var container = $("<div />").appendTo(msgArea)[0];
 			$("<a />").text("Try again?").click(function() {
 				resetMessage(form);
-				$('input', form)[0].focus();
+				$("input", form)[0].focus();
 			}).appendTo(container);
 		}
 		if(options.annotate) {
@@ -149,7 +146,7 @@
 	 * add CSRF form fields to the provided form.
 	 */
 	function addCSRF(form) {
-		$('<input type="hidden" name="csrf_token" />').
+		$("<input type='hidden' name='csrf_token' />").
 			val(getCSRFToken()).appendTo(form);
 	}
 
@@ -244,7 +241,6 @@
 			return url;
 		},
 		login: function(username, password, options) {
-			var status = ts.status;
 			options = options || {};
 			var success = options.success || function() {
 				window.location = options.redirect || ts.getHost(username);
@@ -323,20 +319,20 @@
 				displayMessage(form, ts.locale.spaceSuccess, false);
 				window.location = options.redirect || ts.getHost(username);
 			};
-			var spaceErrback = function(xhr, error, exc) {
-				// XXX: 409 unlikely to occur at this point
+            var spaceErrback = function (xhr) {
+                // XXX: 409 unlikely to occur at this point
 				var msg = xhr.status === 409 ? ts.locale.userError : false;
 				displayMessage(form, msg, true, options);
 			};
-			var userCallback = function(resource, status, xhr) {
+			var userCallback = function() {
 				ts.login(username, password, {
-					success: function(data, status, xhr) {
+					success: function() {
 						var space = new tiddlyweb.Space(username, "/");
 						space.create(spaceCallback, spaceErrback);
 					}
 				});
 			};
-			var userErrback = function(xhr, error, exc) {
+			var userErrback = function(xhr) {
 				var msg = xhr.status === 409 ? ts.locale.userError : false;
 				displayMessage(form, msg, true, options);
 			};
@@ -416,13 +412,13 @@
 				ev.preventDefault();
 				var input = $("input[name=spacename]", form);
 				var space = input.val();
-				var callback = function(data, status, xhr) {
+				var callback = function() {
 					ts.lists.includes($("ul.ts-includes").empty()[0]);
 					input.val("");
-					var msg = space + ' included';
+					var msg = space + " included";
 					displayMessage(form, msg, false);
 				};
-				var errback = function(xhr, error, exc) {
+				var errback = function() {
 					var msg = "Unable to include space with that name.";
 					displayMessage(form, msg, true);
 				};
@@ -441,12 +437,12 @@
 				var username = input.val();
 				var spaceName = /^@/.test(username) ? username.slice(1) :
 						null;
-				var callback = function(data, status, xhr) {
+				var callback = function() {
 					ts.lists.members($("ul.ts-members").empty()[0]);
 					input.val("");
 					resetMessage(form);
 				};
-				var errback = function(xhr, error, exc) {
+				var errback = function(xhr) {
 					if(xhr.status === 403) {
 						displayMessage(form,
 							"Unable to add members from a space you " +
@@ -546,7 +542,7 @@
 					}
 					// IMPORTANT: #auth:OpenID=<openid> is read by the openid tiddlyweb plugin
 					// when present it keeps you logged in as your cookie username
-					$('<input name="tiddlyweb_redirect" type="hidden" />').
+					$("<input name='tiddlyweb_redirect' type='hidden' />").
 						val(window.location.pathname + querystring +
 								"#auth:OpenID=" + identity).appendTo(form);
 				});
@@ -568,9 +564,8 @@
 				$("<span />").text("!").appendTo(msg);
 				form = $("form", form_or_container)[0];
 				if(!form) {
-					form = $('<form />').appendTo(form_or_container)[0];
-					$('<input type="submit" class="button" value="Log out">').
-						appendTo(form);
+					form = $("<form />").appendTo(form_or_container)[0];
+					$("<input type='submit' class='button' value='Log out'>").appendTo(form);
 				}
 			} else {
 				form = form_or_container;
@@ -582,7 +577,7 @@
 			// do login
 			addCSRF(form);
 			var options = {
-				errback: function(xhr, error, exc) {
+				errback: function(xhr) {
 					var code = xhr.status;
 					if(code === 401) {
 						displayMessage(form, ts.locale.badlogin, true);
@@ -652,11 +647,10 @@
 						addDeleteBtn("inclusion", inclusions[i], item, removeInclusion);
 					}
 				};
-				var errback = function(xhr, error, exc) {
+				var errback = function(xhr) {
 					$(list).removeClass("ts-loading").empty();
 					$("<li class='annotation' />").
-						text("Error requesting inclusions:"
-								+ xhr.status + ' ' + xhr.statusText).
+						text("Error requesting inclusions:" + xhr.status + " " + xhr.statusText).
 						prependTo(list);
 				};
 				space.includes().get(callback, errback);
@@ -700,7 +694,7 @@
 						}
 					}
 				};
-				var errback = function(xhr, error, exc) {
+				var errback = function() {
 					$(list).removeClass("ts-loading").empty();
 					$("<li class='annotation' />").
 						text("Only members can see other members.").

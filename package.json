@@ -1,0 +1,30 @@
+{
+  "name": "ts.js",
+  "version": "2.0.0",
+  "description": "Handles TiddlySpace user admin functions",
+  "main": "Gruntfile.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/TiddlySpace/ts.js.git"
+  },
+  "keywords": [
+    "tiddlyspace"
+  ],
+  "author": "Osmosoft",
+  "license": "BSD",
+  "readmeFilename": "README",
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.4.3",
+    "grunt": "~0.4.1",
+    "grunt-contrib-jasmine": "~0.4.2",
+    "grunt-template-jasmine-istanbul": "~0.2.1",
+    "grunt-contrib-clean": "~0.4.1",
+    "grunt-curl": "~1.0.0"
+  }
+}

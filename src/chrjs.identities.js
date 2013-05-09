@@ -12,6 +12,7 @@ jQuery.extend(IdentitiesCollection.prototype, {
 		tiddler.put(callback, errback);
 	},
 	get: function(callback, errback) {
+        var self = this;
 		var uri = this.route();
 		jQuery.ajax({
 			type: "get",
@@ -29,4 +30,4 @@ jQuery.extend(IdentitiesCollection.prototype, {
 
 tiddlyweb.User.prototype.identities = function() {
 	return new IdentitiesCollection(this);
-}
+};

@@ -1,0 +1,8 @@
+language: node_js
+node_js:
+  - 0.8
+before_script: 'npm install -g grunt-cli istanbul'
+script:
+  - 'grunt curl'
+  - 'npm test'
+#  - 'istanbul check-coverage --statements 75 --branches 75 --lines 75 --functions 75 tmp/coverage/coverage.json'
