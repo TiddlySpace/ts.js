@@ -586,7 +586,7 @@
 					}
 				}
 			};
-			$(form).submit(function(ev) {
+			function doLogin(ev) {
 				var user = $("input[name=username]", form).val();
 				var pass = $("input[name=password]", form).val();
 				if(!user) {
@@ -598,6 +598,16 @@
 				options.redirect = $("input[name=redirect]", form).val();
 				ts.login(user, pass, options);
 				ev.preventDefault();
+			}
+
+			$(form).submit(function(ev) {
+				doLogin(ev);
+			});
+
+			$(form).keypress(function(ev) {
+				if(ev.keyCode === 13) {
+					doLogin(ev);
+				}
 			});
 		}
 	};
