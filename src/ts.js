@@ -54,8 +54,34 @@
 	 */
 	function resetMessage(form) {
 		$(".annotation", form).removeClass("annotation");
-		$(".messageArea", form).empty().removeClass("error").hide();
+		$(".messageArea", form).removeClass("error").hide();
 		$(".inputArea", form).show();
+	}
+
+	/*
+	 * Build message area element
+	 */
+	function buildMsgArea(form) {
+        var msgArea = $("<div class='messageArea' />");
+        msgArea
+            .append($("<button></button>")
+				.html("&times;")
+				.addClass("close-btn")
+				.attr("title", "close notification")
+				.data("parent-class", "messageArea")
+				.click( function() {
+                    resetMessage(form);
+                    return false;
+				} )
+			)
+			.append( $("<p></p>") );
+
+		var container = $("<div />").appendTo(msgArea)[0];
+		$("<a />").text("Try again?").click(function() {
+			$("input", form)[0].focus();
+		}).appendTo(container);
+
+        return msgArea;
 	}
 
 	/*
@@ -70,24 +96,26 @@
 		}
 		var msgArea = $(".messageArea", form);
 		if(msgArea.length === 0) {
-			msgArea = $("<div class='messageArea' />").prependTo(form);
+            msgArea = buildMsgArea(form);
+            msgArea.prependTo(form);
 		}
+
+        // replace error msg
 		msgArea
-			.append($("<button></button>")
-					.html("&times;")
-					.addClass("close-btn")
-					.attr("title", "close notification")
-					.data("parent-class", "messageArea")
-					.click( function() { resetMessage(form); } )
-			).append( $("<p></p>").html(msg || ts.locale.error) ).show(100);
+            .find("p")
+                .empty()
+                .html(msg || ts.locale.error)
+            .end()
+            .show(100);
+
+        var errorDiv = msgArea.find("div");
 		if(error) {
-			msgArea.addClass("error annotation");
-			var container = $("<div />").appendTo(msgArea)[0];
-			$("<a />").text("Try again?").click(function() {
-				resetMessage(form);
-				$("input", form)[0].focus();
-			}).appendTo(container);
-		}
+            msgArea.addClass("error annotation");
+            errorDiv.show();
+        } else {
+            msgArea.removeClass("error");
+            errorDiv.hide();
+        }
 		if(options.annotate) {
 			$(options.annotate, form).addClass("annotation");
 		}
