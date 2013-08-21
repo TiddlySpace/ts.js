@@ -276,10 +276,9 @@
 			// XXX void errback?
 			var errback = options.errback || function() {};
 			var challenger = options.challenger = options.challenger ||
-				"tiddlywebplugins.tiddlyspace.cookie_form";
-			var uri = "/challenge/" + challenger;
+				"/challenge/tiddlywebplugins.tiddlyspace.cookie_form";
 			$.ajax({
-				url: uri,
+				url: challenger,
 				type: "POST",
 				data: {
 					user: username,
@@ -624,7 +623,7 @@
 					return displayMessage(form, "Please provide a password!");
 				}
 				options.redirect = $("input[name=redirect]", form).val();
-				options.challenger = $("input[name=challenger]", form).val();
+				options.challenger = $(form).attr("action");
 				ts.login(user, pass, options);
 				ev.preventDefault();
 			}
