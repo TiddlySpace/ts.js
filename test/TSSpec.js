@@ -71,6 +71,7 @@ describe("ts.js", function () {
     describe("Forms", function() {
 
         var initialisedTs;
+        var stubbedAjax;
 
         beforeEach(function () {
 
@@ -87,10 +88,16 @@ describe("ts.js", function () {
             }, "ts to initialise", 500);
         });
 
+        afterEach(function () {
+
+            stubbedAjax.restore();
+        });
+
         it("should use the default challenger ", function () {
 
             loadFixtures("login-form.html");
-            var stubbedAjax = sinon.stub($, "ajax");
+            // ajax must be stubbed after loading fixtures because that function requires it.
+            stubbedAjax = sinon.stub($, "ajax");
 
             initialisedTs.forms.login(document.getElementsByClassName("ts-login")[0]);
 
@@ -102,14 +109,12 @@ describe("ts.js", function () {
             sinon.assert.calledWithMatch(stubbedAjax, {
                 url: "/challenge/tiddlywebplugins.tiddlyspace.cookie_form"
             });
-
-            stubbedAjax.restore();
         });
 
         it("should use the challenger specified by the form", function () {
 
             loadFixtures("login-form-custom-challenger.html");
-            var stubbedAjax = sinon.stub($, "ajax");
+            stubbedAjax = sinon.stub($, "ajax");
 
             initialisedTs.forms.login(document.getElementsByClassName("ts-login")[0]);
 
@@ -121,8 +126,6 @@ describe("ts.js", function () {
             sinon.assert.calledWithMatch(stubbedAjax, {
                 url: "/challenge/cookie_form"
             });
-
-            stubbedAjax.restore();
         });
     });
 
