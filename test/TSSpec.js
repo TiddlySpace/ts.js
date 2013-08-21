@@ -1,4 +1,3 @@
-/*global describe:false, it:false, expect:false*/
 describe("ts.js", function () {
 
     tiddlyweb.status = {
@@ -17,53 +16,114 @@ describe("ts.js", function () {
         "version": "1.4.9"
     };
 
-    it("should initialise correctly by obtaining the current space name", function() {
-        var res;
-        var test = function(ts) {
-            res = ts.currentSpace;
-        };
-        ts.init(test);
-        expect(res).toEqual("frontpage");
+    describe("Initialisation", function () {
+
+        it("should initialise correctly by obtaining the current space name", function() {
+            var res;
+            var test = function(ts) {
+                res = ts.currentSpace;
+            };
+            ts.init(test);
+            expect(res).toEqual("frontpage");
+        });
+
+        it("should be able to get the host URL", function() {
+            var host;
+            var callback = function(ts) {
+                host = ts.getHost(false);
+            };
+            ts.init(callback);
+            expect(host).toEqual("http://tiddlyspace.com");
+        });
+
+        it("should be able to resolve the current space name when passed a space name", function() {
+            var res;
+            var test = function(ts) {
+                res = ts.currentSpace;
+            };
+            ts.init(test, { space: "foo" });
+            expect(res).toEqual("foo");
+        });
+
+        it("should be able to resolve the current space name to false when passed", function() {
+            var res;
+            var test = function(ts) {
+                res = ts.currentSpace;
+            };
+            ts.init(test, { space: false });
+            expect(res).toEqual(false);
+        });
+
+        it("should be able to parse parameters correctly", function() {
+            var queryString = "foo=5&bar=10",
+                res;
+            var test = function(ts) {
+                res = ts.parseParameters(queryString);
+            };
+
+            ts.init(test);
+
+            expect(res.foo).toEqual("5");
+            expect(res.bar).toEqual("10");
+        });
     });
 
-    it("should be able to get the host URL", function() {
-        var host;
-        var callback = function(ts) {
-            host = ts.getHost(false);
-        };
-        ts.init(callback);
-        expect(host).toEqual("http://tiddlyspace.com");
-    });
+    describe("Forms", function() {
 
-    it("should be able to resolve the current space name when passed a space name", function() {
-        var res;
-        var test = function(ts) {
-            res = ts.currentSpace;
-        };
-        ts.init(test, { space: "foo" });
-        expect(res).toEqual("foo");
-    });
+        var initialisedTs;
 
-    it("should be able to resolve the current space name to false when passed", function() {
-        var res;
-        var test = function(ts) {
-            res = ts.currentSpace;
-        };
-        ts.init(test, { space: false });
-        expect(res).toEqual(false);
-    });
+        beforeEach(function () {
 
-    it("should be able to parse parameters correctly", function() {
-        var queryString = "foo=5&bar=10",
-            res;
-        var test = function(ts) {
-            res = ts.parseParameters(queryString);
-        };
+            jasmine.getFixtures().fixturesPath = "test/fixtures";
+            runs(function() {
 
-        ts.init(test);
+                ts.init(function(ts) {
+                    initialisedTs = ts;
+                });
+            });
 
-        expect(res.foo).toEqual("5");
-        expect(res.bar).toEqual("10");
+            waitsFor(function() {
+                return initialisedTs !== undefined;
+            }, "ts to initialise", 500);
+        });
+
+        it("should use the default challenger ", function () {
+
+            loadFixtures("login-form.html");
+            var stubbedAjax = sinon.stub($, "ajax");
+
+            initialisedTs.forms.login(document.getElementsByClassName("ts-login")[0]);
+
+            $(".ts-login input[name='username']").val("pads");
+            $(".ts-login input[name='password']").val("letmein");
+            $(".ts-login").submit();
+
+
+            sinon.assert.calledWithMatch(stubbedAjax, {
+                url: "/challenge/tiddlywebplugins.tiddlyspace.cookie_form"
+            });
+
+            stubbedAjax.restore();
+        });
+
+        it("should use the challenger specified by the form", function () {
+
+            loadFixtures("login-form-custom-challenger.html");
+            var stubbedAjax = sinon.stub($, "ajax");
+
+            initialisedTs.forms.login(document.getElementsByClassName("ts-login")[0]);
+
+            $(".ts-login input[name='username']").val("pads");
+            $(".ts-login input[name='password']").val("letmein");
+            $(".ts-login").submit();
+
+
+            sinon.assert.calledWithMatch(stubbedAjax, {
+                url: "/challenge/cookie_form"
+            });
+
+            stubbedAjax.restore();
+        });
     });
 
 });

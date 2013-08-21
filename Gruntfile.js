@@ -37,7 +37,23 @@ module.exports = function (grunt) {
                 src: ["src/*.js"]
             },
             testFiles: {
-                src: ["test/*.js"]
+                src: ["test/*.js"],
+                options: {
+                    globals: {
+                        tiddlyweb: true,
+                        ts: true,
+                        describe: true,
+                        it: true,
+                        expect: true,
+                        beforeEach: true,
+                        jasmine: true,
+                        loadFixtures: true,
+                        $: true,
+                        runs: true,
+                        waitsFor: true,
+                        sinon: true
+                    }
+                }
             }
         },
         jasmine: {
@@ -46,12 +62,23 @@ module.exports = function (grunt) {
                 options: {
                     vendor: ["lib/jquery.min.js", "lib/jquery-json.min.js", "lib/chrjs.js", "lib/chrjs-users.js",
                         "lib/chrjs-space.js"],
-                    helpers: [],
+                    helpers: ["lib/test/jasmine-jquery.js", "lib/test/sinon-1.7.3.js"],
                     specs: "test/*Spec.js",
                     template: require("grunt-template-jasmine-istanbul"),
                     templateOptions: {
                         coverage: "tmp/coverage/coverage.json",
-                        report: "tmp/coverage"
+                        report: [
+                            {
+                                type: "lcov",
+                                options: {
+                                    dir: "tmp/coverage"
+                                }
+                            },
+                            {
+                                type: "text",
+                                options: {}
+                            }
+                        ]
                     },
                     keepRunner: true
                 }
@@ -63,7 +90,9 @@ module.exports = function (grunt) {
             "lib/chrjs-users.js": "https://raw.github.com/tiddlyweb/chrjs/master/users.js",
             "lib/chrjs.js": "https://raw.github.com/tiddlyweb/chrjs/master/main.js",
             "lib/jquery.min.js": "http://tiddlyspace.com/bags/common/tiddlers/jquery.js",
-            "lib/jquery-json.min.js": "http://jquery-json.googlecode.com/files/jquery.json-2.2.min.js"
+            "lib/jquery-json.min.js": "http://jquery-json.googlecode.com/files/jquery.json-2.2.min.js",
+            "lib/test/jasmine-jquery.js": "https://raw.github.com/velesin/jasmine-jquery/master/lib/jasmine-jquery.js",
+            "lib/test/sinon-1.7.3.js": "http://sinonjs.org/releases/sinon-1.7.3.js"
         }
     });
 
