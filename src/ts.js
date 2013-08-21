@@ -624,7 +624,7 @@
 					return displayMessage(form, "Please provide a password!");
 				}
 				options.redirect = $("input[name=redirect]", form).val();
-                options.challenger = $("input[name=challenger]", form).val();
+        options.challenger = $("input[name=challenger]", form).val();
 				ts.login(user, pass, options);
 				ev.preventDefault();
 			}
